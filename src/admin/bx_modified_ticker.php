@@ -64,14 +64,22 @@ $messageStack->output();
             <div class="bxa-tools">
               <div class="bxa-seg" id="bxa-langs" role="group" aria-label="Sprache">
                 <?php 
-                  $languages = xtc_get_languages();
+                  $languages = array();
+                  $languages_query = xtc_db_query("SELECT languages_id, name, code
+                                                    FROM " . TABLE_LANGUAGES . "
+                                                    WHERE status = '1' OR status_admin = '1'
+                                                    ORDER BY sort_order");
+                  while ($language_row = xtc_db_fetch_array($languages_query)) {
+                    $languages[] = $language_row;
+                  }
+                  
                   $activeLanguage = $_SESSION['language_code'] ?? 'de';
 
                   foreach ($languages as $language) {
                     $code = $language['code'];
                     $name = $language['name'];
                     $ariaPressed = $code === $activeLanguage ? 'true' : 'false';
-                    echo '<button data-l="' . $code . '" aria-pressed="' . $ariaPressed . '">' . $name . '</button>'. PHP_EOL;
+                    echo '<button data-l="' . htmlspecialchars($code, ENT_QUOTES, 'UTF-8') . '" aria-pressed="' . $ariaPressed . '">' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</button>' . PHP_EOL;
                   }
                 ?>
               </div>
@@ -113,7 +121,7 @@ $messageStack->output();
 
                 <h3><?php echo MODULE_BX_MODIFIED_TICKER_COLORS; ?></h3>
                 <div id="bxa-colors"></div>
-                
+
                 <h3><?php echo MODULE_BX_MODIFIED_TICKER_LABEL; ?></h3>
                 <input class="bxa-txt" id="bxa-label" aria-label="Label-Text">
                 <p class="bxa-hint"><?php echo MODULE_BX_MODIFIED_TICKER_HINT; ?></p>

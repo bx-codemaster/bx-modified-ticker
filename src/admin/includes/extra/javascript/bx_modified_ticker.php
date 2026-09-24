@@ -23,6 +23,11 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
     $ui_language = $_SESSION['language_code'] ?? 'de';
     $ui_language_json = json_encode($ui_language, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
+    // Standardsprache des Shops = Fallback-Sprache (wie später im Frontend)
+    $default_language = defined('DEFAULT_LANGUAGE') ? DEFAULT_LANGUAGE : $ui_language;
+    
+    $default_language_json = json_encode($default_language, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
     $translations = [
       'bx_txt_speed' => MODULE_BX_MODIFIED_TICKER_SPEED,
       'bx_txt_gap' => MODULE_BX_MODIFIED_TICKER_GAP,
@@ -48,6 +53,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 document.addEventListener('DOMContentLoaded', function () {
 "use strict";
 
+const defaultLanguage = <?php echo $default_language_json; ?>;
 const I18n = <?php echo json_encode($translations, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
 const tickerSettings = {
@@ -148,7 +154,8 @@ const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
   '"': '&quot;',
   "'": '&#39;'
 }[character]));
-const getLocalizedText = translations => translations[tickerState.lang] || translations[<?php echo $ui_language_json; ?>] || '';
+
+const getLocalizedText = translations => translations[tickerState.lang] || translations[defaultLanguage] || '';
 
 querySelector('#bxa-sliders').innerHTML = sliderDefinitions.map(([settingKey, label, unit, minimum, maximum, step]) => `
   <label class="bxa-row">
@@ -243,7 +250,7 @@ function list() {
     <div class="bxa-it" data-i="${itemIndex}">
       <div class="bxa-l1">
         <span class="bxa-hd" draggable="true" tabindex="0" role="button" aria-label="Verschieben">⠿</span>
-        <input class="bxa-txt" data-f="text" value="${escapeHtml(item.text[tickerState.lang] || '')}" placeholder="${tickerState.lang === 'de' ? I18n.bx_txt_message_text : 'Fallback: ' + escapeHtml(item.text.de || '')}" aria-label="Text">
+        <input class="bxa-txt" data-f="text" value="${escapeHtml(item.text[tickerState.lang] || '')}" placeholder="${tickerState.lang !== defaultLanguage && item.text[defaultLanguage] ? 'Fallback: ' + escapeHtml(item.text[defaultLanguage]) : I18n.bx_txt_message_text}" aria-label="Text">
         <input class="bxa-sw" type="checkbox" data-f="active" ${item.active ? 'checked' : ''} aria-label="Aktiv">
         <button class="bxa-x" data-del aria-label="Löschen">✕</button>
       </div>
