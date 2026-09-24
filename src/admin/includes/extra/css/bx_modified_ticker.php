@@ -34,8 +34,10 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   --bxa-mut: #5d6877;
   --bxa-line: #dfe4ea;
   --bxa-acc: #AF417E;
+  --bxa-acc-secondary: #b2c200;
+  --bxa-acc-secondary-hover: #9eae00;
   --bxa-accInk: #fff;
-  --bxa-r: 10px;
+  --bxa-radius: 10px;
 
   /* Standardwerte der Vorschau (JS überschreibt sie auf #bxa-tk) */
   --bx-bg: var(--bxa-bg);
@@ -86,7 +88,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 }
 
 .bxa .bxa-tools .bxa-seg {
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .bxa .bxa-tools .bxa-seg button {
@@ -94,8 +96,21 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   font-size: .85em;
 }
 
+/* Erster Button (links oben & unten) */
+#bxa-langs button:first-child,
+.bxa-seg button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+/* Letzter Button (rechts oben & unten) */
+#bxa-langs button:last-child,
+.bxa-seg button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
 .bxa .bxa-tools .bxa-btn {
   padding: .25rem .75rem;
+  margin: 0;
   border-radius: 6px;
   font-size: .85em;
 }
@@ -103,31 +118,51 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 .bxa .bxa-seg {
   display: inline-flex;
   border: 1px solid var(--bxa-line);
-  border-radius: 8px;
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .bxa .bxa-seg button {
   border: 0;
   background: none;
   padding: .4rem .8rem;
+  margin: 0;
   cursor: pointer;
+  transition: background-color .15s, color .15s;
+}
+
+.bxa .bxa-seg button:hover:not([aria-pressed="true"]) {
+  color: var(--bxa-accInk);
+  background: var(--bxa-mut);
 }
 
 .bxa .bxa-seg button[aria-pressed="true"] {
-  background: var(--bxa-acc);
+  background: var(--bxa-acc-secondary);
   color: var(--bxa-accInk);
   font-weight: 600;
+}
+
+.bxa .bxa-seg button[aria-pressed="true"]:hover {
+  background: var(--bxa-acc-secondary-hover);
 }
 
 .bxa .bxa-btn {
   border: 0;
   border-radius: 8px;
   padding: .5rem 1rem;
-  background: var(--bxa-acc);
+  background: var(--bxa-acc-secondary);
   color: var(--bxa-accInk);
   font-weight: 600;
   cursor: pointer;
+  transition: background-color .15s, transform .15s;
+}
+
+.bxa .bxa-btn:hover {
+  background: var(--bxa-acc-secondary-hover);
+}
+
+.bxa .bxa-btn:active {
+  transform: translateY(1px);
 }
 
 .bxa .bxa-btn.bxa-ghost {
@@ -135,6 +170,11 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   color: var(--bxa-ink);
   border: 1px dashed var(--bxa-line);
   font-weight: 500;
+}
+
+.bxa .bxa-btn.bxa-ghost:hover {
+  background: var(--bxa-bg);
+  border-color: var(--bxa-acc);
 }
 
 .bxa :focus-visible {
@@ -157,7 +197,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   flex-direction: column;
   min-height: 9rem;
   border: 1px solid var(--bxa-line);
-  border-radius: var(--bxa-r);
+  border-radius: var(--bxa-radius);
   overflow: hidden;
   background: var(--bxa-pane);
 }
@@ -296,7 +336,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 .bxa section {
   background: var(--bxa-pane);
   border: 1px solid var(--bxa-line);
-  border-radius: var(--bxa-r);
+  border-radius: var(--bxa-radius);
   padding: 1rem 1.1rem;
 }
 
@@ -312,7 +352,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   font-weight: 600;
 }
 
-.bxa .bxa-row {
+.bxa .bxa-radiusow {
   display: grid;
   grid-template-columns: 6.5rem 1fr 4.6rem;
   align-items: center;
@@ -320,13 +360,13 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   margin: .55rem 0;
 }
 
-.bxa .bxa-row output {
+.bxa .bxa-radiusow output {
   text-align: right;
   color: var(--bxa-mut);
   font-variant-numeric: tabular-nums;
 }
 
-.bxa .bxa-row.bxa-plain {
+.bxa .bxa-radiusow.bxa-plain {
   grid-template-columns: 1fr auto;
 }
 
@@ -343,6 +383,52 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   border-radius: 6px;
   background: none;
   cursor: pointer;
+}
+
+#bxa-sliders .bxa-row {
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+}
+
+#bxa-sliders .bxa-row span {
+  grid-column: span 2 / span 2;
+}
+
+#bxa-sliders .bxa-row input,
+#bxa-sliders .bxa-row output {
+  grid-row-start: 2;
+}
+#bxa-sliders .bxa-row output {
+  text-align: right;
+}
+
+#bxa-colors {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+}
+
+#bxa-colors .bxa-plain {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+#bxa-colors .bxa-plain span {
+display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: self-end;
+  align-content: revert;
+  gap: 4px;
+}
+
+section > .bxa-row.bxa-plain {
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 
 .bxa .bxa-sw {

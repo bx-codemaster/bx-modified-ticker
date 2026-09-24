@@ -19,6 +19,27 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') && 
     ((string)MODULE_BX_MODIFIED_TICKER_STATUS === 'True') && 
     basename($_SERVER['PHP_SELF']) == 'bx_modified_ticker.php') {
+
+    $ui_language = $_SESSION['language_code'] ?? 'de';
+    $ui_language_json = json_encode($ui_language, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
+    $translations = [
+      'bx_txt_speed' => MODULE_BX_MODIFIED_TICKER_SPEED,
+      'bx_txt_gap' => MODULE_BX_MODIFIED_TICKER_GAP,
+      'bx_txt_size' => MODULE_BX_MODIFIED_TICKER_SIZE,
+      'bx_txt_pad' => MODULE_BX_MODIFIED_TICKER_PAD,
+      'bx_txt_fade' => MODULE_BX_MODIFIED_TICKER_FADE,
+      'bx_txt_bg' => MODULE_BX_MODIFIED_TICKER_BG,
+      'bx_txt_ink' => MODULE_BX_MODIFIED_TICKER_INK,
+      'bx_txt_accent' => MODULE_BX_MODIFIED_TICKER_ACCENT,
+      'bx_txt_line' => MODULE_BX_MODIFIED_TICKER_LINE,
+      'bx_txt_no_active_message' => MODULE_BX_MODIFIED_TICKER_NO_ACTIVE_MESSAGE,
+      'bx_txt_message_text' => MODULE_BX_MODIFIED_TICKER_TEXT,
+      'bx_txt_message_link' => MODULE_BX_MODIFIED_TICKER_LINK,
+      'bx_txt_message_from' => MODULE_BX_MODIFIED_TICKER_FROM,
+      'bx_txt_message_to' => MODULE_BX_MODIFIED_TICKER_TO,
+    ];
+
 ?>
  <script>
 /* Läuft erst nach dem Laden des DOM (extra/javascript wird im <head> eingebunden)
@@ -26,7 +47,10 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
    durch globale Namen überschrieben werden. */
 document.addEventListener('DOMContentLoaded', function () {
 "use strict";
-const S = {
+
+const I18n = <?php echo json_encode($translations, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+
+const tickerSettings = {
   speed: 60,
   gap: 3,
   size: 15,
@@ -41,21 +65,19 @@ const S = {
   line: '#dfe4ea'
 };
 
-const st = {
-  lang: 'de',
+const tickerState = {
+  lang: <?php echo $ui_language_json; ?>,
   label: {
-    de: 'Live',
-    en: 'Live'
+    <?php echo $ui_language_json; ?>: 'Live',
   },
   items: [
     {
       active: true,
-      link: '/aktion',
+      link: '',
       from: '',
       to: '',
       text: {
-        de: 'Versandkostenfrei ab 50 Euro',
-        en: 'Free shipping from 50 euros'
+        <?php echo $ui_language_json; ?>: '',
       }
     },
     {
@@ -64,322 +86,340 @@ const st = {
       from: '',
       to: '',
       text: {
-        de: 'Neu im Sortiment: Sommerkollektion',
-        en: ''
+        <?php echo $ui_language_json; ?>: '',
       }
     },
     {
       active: true,
-      link: '/service',
+      link: '',
       from: '',
-      to: '2099-12-31',
+      to: '',
       text: {
-        de: 'Kostenlose Rücksendung innerhalb von 30 Tagen',
-        en: 'Free returns within 30 days'
+        <?php echo $ui_language_json; ?>: '',
       }
     }
   ]
 };
 
-const SL = [
-  ['speed', 'Tempo', 'px/s', 20, 240, 5],
-  ['gap', 'Abstand', 'rem', 1, 8, .25],
-  ['size', 'Schrift', 'px', 12, 24, 1],
-  ['pad', 'Höhe', 'rem', .4, 1.6, .1],
-  ['fade', 'Kanten', 'rem', 0, 8, .5]
+const sliderDefinitions = [
+  ['speed', I18n.bx_txt_speed, 'px/s', 20, 240, 5],
+  ['gap', I18n.bx_txt_gap, 'rem', 1, 8, .25],
+  ['size', I18n.bx_txt_size, 'px', 12, 24, 1],
+  ['pad', I18n.bx_txt_pad, 'rem', .4, 1.6, .1],
+  ['fade', I18n.bx_txt_fade, 'rem', 0, 8, .5]
 ];
 
-const CO = [
-  ['bg', 'Hintergrund'],
-  ['ink', 'Text'],
-  ['accent', 'Akzent'],
-  ['line', 'Linien']
+const colorDefinitions = [
+  ['bg', I18n.bx_txt_bg],
+  ['ink', I18n.bx_txt_ink],
+  ['accent', I18n.bx_txt_accent],
+  ['line', I18n.bx_txt_line]
 ];
 
-const $ = s => document.querySelector(s);
-const tk = $('#bxa-tk');
-const esc = s => String(s).replace(/[&<>"']/g, c => ({
+const querySelector = selector => document.querySelector(selector);
+const tickerElement = querySelector('#bxa-tk');
+const availableLanguages = [...new Set(
+  [...document.querySelectorAll('#bxa-langs button')]
+    .map(button => button.dataset.l)
+    .filter(Boolean)
+)];
+
+const selectedLanguageButton = querySelector('#bxa-langs button[aria-pressed="true"]');
+if (selectedLanguageButton) {
+  tickerState.lang = selectedLanguageButton.dataset.l;
+}
+
+availableLanguages.forEach(languageCode => {
+  if (!(languageCode in tickerState.label)) {
+    tickerState.label[languageCode] = '';
+  }
+
+  tickerState.items.forEach(item => {
+    if (!(languageCode in item.text)) {
+      item.text[languageCode] = '';
+    }
+  });
+});
+
+const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;'
-}[c]));
-const T = o => o[st.lang] || o.de || '';
+}[character]));
+const getLocalizedText = translations => translations[tickerState.lang] || translations[<?php echo $ui_language_json; ?>] || '';
 
-$('#bxa-sliders').innerHTML = SL.map(([k, n, u, a, b, s]) => `
+querySelector('#bxa-sliders').innerHTML = sliderDefinitions.map(([settingKey, label, unit, minimum, maximum, step]) => `
   <label class="bxa-row">
-    <span>${n}</span>
-    <input type="range" data-k="${k}" min="${a}" max="${b}" step="${s}" value="${S[k]}">
-    <output data-o="${k}">${S[k]} ${u}</output>
+    <span>${label}</span>
+    <input type="range" data-k="${settingKey}" min="${minimum}" max="${maximum}" step="${step}" value="${tickerSettings[settingKey]}">
+    <output data-o="${settingKey}">${tickerSettings[settingKey]} ${unit}</output>
   </label>
 `).join('');
 
-$('#bxa-colors').innerHTML = CO.map(([k, n]) => `
+querySelector('#bxa-colors').innerHTML = colorDefinitions.map(([settingKey, label]) => `
   <label class="bxa-row bxa-plain">
-    <span>${n}</span>
+    <span>${label}</span>
     <span>
-      <output data-o="${k}" style="color:var(--mut);margin-right:.5rem">${S[k]}</output>
-      <input type="color" data-k="${k}" value="${S[k]}">
+      <output data-o="${settingKey}" style="color:var(--mut);margin-right:.5rem">${tickerSettings[settingKey]}</output>
+      <input type="color" data-k="${settingKey}" value="${tickerSettings[settingKey]}">
     </span>
   </label>
 `).join('');
 
-document.querySelector('[data-k=pause]').checked = S.pause;
+querySelector('[data-k=pause]').checked = tickerSettings.pause;
 
-function vars() {
-  const s = tk.style;
+function applyTickerStyles() {
+  const tickerStyle = tickerElement.style;
 
-  s.setProperty('--bx-bg', S.bg);
-  s.setProperty('--bx-ink', S.ink);
-  s.setProperty('--bx-accent', S.accent);
-  s.setProperty('--bx-line', S.line);
-  s.setProperty('--bx-gap', S.gap + 'rem');
-  s.setProperty('--bx-size', S.size + 'px');
-  s.setProperty('--bx-pad', S.pad + 'rem');
-  s.setProperty('--bx-fade', S.fade + 'rem');
+  tickerStyle.setProperty('--bx-bg', tickerSettings.bg);
+  tickerStyle.setProperty('--bx-ink', tickerSettings.ink);
+  tickerStyle.setProperty('--bx-accent', tickerSettings.accent);
+  tickerStyle.setProperty('--bx-line', tickerSettings.line);
+  tickerStyle.setProperty('--bx-gap', tickerSettings.gap + 'rem');
+  tickerStyle.setProperty('--bx-size', tickerSettings.size + 'px');
+  tickerStyle.setProperty('--bx-pad', tickerSettings.pad + 'rem');
+  tickerStyle.setProperty('--bx-fade', tickerSettings.fade + 'rem');
 
-  tk.classList.toggle('rev', S.dir === 'right');
-  tk.classList.toggle('pause', S.pause);
-  $('#bxa-frame').dataset.pos = S.pos;
+  tickerElement.classList.toggle('rev', tickerSettings.dir === 'right');
+  tickerElement.classList.toggle('pause', tickerSettings.pause);
+  querySelector('#bxa-frame').dataset.pos = tickerSettings.pos;
 
-  const g = tk.querySelector('.bx-ticker-group');
-  if (g) {
+  const tickerGroup = tickerElement.querySelector('.bx-ticker-group');
+  if (tickerGroup) {
     const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const dist = g.offsetWidth + S.gap * rootFontSize;
-    s.setProperty('--bx-dur', Math.max(4, dist / S.speed).toFixed(1) + 's');
+    const tickerDistance = tickerGroup.offsetWidth + tickerSettings.gap * rootFontSize;
+    tickerStyle.setProperty('--bx-dur', Math.max(4, tickerDistance / tickerSettings.speed).toFixed(1) + 's');
   }
 }
 
 function render() {
-  const today = new Date().toISOString().slice(0, 10);
-  const li = st.items
-    .filter(i => i.active && (!i.from || i.from <= today) && (!i.to || i.to >= today) && T(i.text))
-    .map(i => `
-      <li>${i.link ? `<a href="#">${esc(T(i.text))}</a>` : esc(T(i.text))}</li>
+  const currentDate = new Date().toISOString().slice(0, 10);
+  const tickerItemsMarkup = tickerState.items
+    .filter(item => item.active && (!item.from || item.from <= currentDate) && (!item.to || item.to >= currentDate) && getLocalizedText(item.text))
+    .map(item => `
+      <li>${item.link ? `<a href="#">${escapeHtml(getLocalizedText(item.text))}</a>` : escapeHtml(getLocalizedText(item.text))}</li>
     `)
-    .join('') || '<li>Keine aktive Meldung</li>';
+    .join('') || '<li>' + I18n.bx_txt_no_active_message + '</li>';
 
-  tk.innerHTML = `
-    <div class="bx-ticker-label">${esc(T(st.label))}</div>
+  tickerElement.innerHTML = `
+    <div class="bx-ticker-label">${escapeHtml(getLocalizedText(tickerState.label))}</div>
     <div class="bx-ticker-viewport">
-      <ul class="bx-ticker-group">${li}</ul>
-      <ul class="bx-ticker-group" aria-hidden="true">${li}</ul>
+      <ul class="bx-ticker-group">${tickerItemsMarkup}</ul>
+      <ul class="bx-ticker-group" aria-hidden="true">${tickerItemsMarkup}</ul>
     </div>
   `;
 
-  vars();
-  json();
+  applyTickerStyles();
+  updateJsonPreview();
 }
 
-function json() {
-  const K = {
-    BX_TICKER_SPEED: S.speed,
-    BX_TICKER_GAP: S.gap,
-    BX_TICKER_FONT_SIZE: S.size,
-    BX_TICKER_PADDING: S.pad,
-    BX_TICKER_FADE: S.fade,
-    BX_TICKER_PAUSE_HOVER: S.pause ? 'True' : 'False',
-    BX_TICKER_DIRECTION: S.dir,
-    BX_TICKER_POSITION: S.pos,
-    BX_TICKER_COLOR_BG: S.bg,
-    BX_TICKER_COLOR_TEXT: S.ink,
-    BX_TICKER_COLOR_ACCENT: S.accent,
-    BX_TICKER_COLOR_LINE: S.line
+function updateJsonPreview() {
+  const configuration = {
+    BX_TICKER_SPEED: tickerSettings.speed,
+    BX_TICKER_GAP: tickerSettings.gap,
+    BX_TICKER_FONT_SIZE: tickerSettings.size,
+    BX_TICKER_PADDING: tickerSettings.pad,
+    BX_TICKER_FADE: tickerSettings.fade,
+    BX_TICKER_PAUSE_HOVER: tickerSettings.pause ? 'True' : 'False',
+    BX_TICKER_DIRECTION: tickerSettings.dir,
+    BX_TICKER_POSITION: tickerSettings.pos,
+    BX_TICKER_COLOR_BG: tickerSettings.bg,
+    BX_TICKER_COLOR_TEXT: tickerSettings.ink,
+    BX_TICKER_COLOR_ACCENT: tickerSettings.accent,
+    BX_TICKER_COLOR_LINE: tickerSettings.line
   };
 
-  $('#bxa-json').textContent = JSON.stringify({
-    configuration: K,
-    label: st.label,
-    bx_ticker_items: st.items
+  querySelector('#bxa-json').textContent = JSON.stringify({
+    configuration,
+    label: tickerState.label,
+    bx_ticker_items: tickerState.items
   }, null, 1);
 }
 
 function list() {
-  $('#bxa-list').innerHTML = st.items.map((it, i) => `
-    <div class="bxa-it" data-i="${i}">
+  querySelector('#bxa-list').innerHTML = tickerState.items.map((item, itemIndex) => `
+    <div class="bxa-it" data-i="${itemIndex}">
       <div class="bxa-l1">
         <span class="bxa-hd" draggable="true" tabindex="0" role="button" aria-label="Verschieben">⠿</span>
-        <input class="bxa-txt" data-f="text" value="${esc(it.text[st.lang] || '')}" placeholder="${st.lang === 'de' ? 'Text der Meldung' : 'Fallback: ' + esc(it.text.de || '')}" aria-label="Text">
-        <input class="bxa-sw" type="checkbox" data-f="active" ${it.active ? 'checked' : ''} aria-label="Aktiv">
+        <input class="bxa-txt" data-f="text" value="${escapeHtml(item.text[tickerState.lang] || '')}" placeholder="${tickerState.lang === 'de' ? I18n.bx_txt_message_text : 'Fallback: ' + escapeHtml(item.text.de || '')}" aria-label="Text">
+        <input class="bxa-sw" type="checkbox" data-f="active" ${item.active ? 'checked' : ''} aria-label="Aktiv">
         <button class="bxa-x" data-del aria-label="Löschen">✕</button>
       </div>
       <div class="bxa-l2">
-        <label>Link<input class="bxa-txt" data-f="link" value="${esc(it.link)}" placeholder="optional"></label>
-        <label>Von<input class="bxa-txt" type="date" data-f="from" value="${it.from}"></label>
-        <label>Bis<input class="bxa-txt" type="date" data-f="to" value="${it.to}"></label>
+        <label>${I18n.bx_txt_message_link}<input class="bxa-txt" data-f="link" value="${escapeHtml(item.link)}" placeholder="optional"></label>
+        <label>${I18n.bx_txt_message_from}<input class="bxa-txt" type="date" data-f="from" value="${item.from}"></label>
+        <label>${I18n.bx_txt_message_to}<input class="bxa-txt" type="date" data-f="to" value="${item.to}"></label>
       </div>
     </div>
   `).join('');
 }
 
-function move(a, b) {
-  if (b < 0 || b >= st.items.length) {
+function moveItem(fromIndex, toIndex) {
+  if (toIndex < 0 || toIndex >= tickerState.items.length) {
     return;
   }
 
-  st.items.splice(b, 0, st.items.splice(a, 1)[0]);
+  tickerState.items.splice(toIndex, 0, tickerState.items.splice(fromIndex, 1)[0]);
   list();
   render();
 }
 
-document.addEventListener('input', e => {
-  const k = e.target.dataset.k;
-  if (!k) {
+document.addEventListener('input', event => {
+  const settingKey = event.target.dataset.k;
+  if (!settingKey) {
     return;
   }
 
-  S[k] = e.target.type === 'checkbox'
-    ? e.target.checked
-    : e.target.type === 'range'
-      ? +e.target.value
-      : e.target.value;
+  tickerSettings[settingKey] = event.target.type === 'checkbox'
+    ? event.target.checked
+    : event.target.type === 'range'
+      ? +event.target.value
+      : event.target.value;
 
-  const o = document.querySelector(`[data-o=${k}]`);
-  if (o) {
-    const u = (SL.find(x => x[0] === k) || [])[2];
-    o.textContent = S[k] + (u ? ' ' + u : '');
+  const outputElement = querySelector(`[data-o=${settingKey}]`);
+  if (outputElement) {
+    const unit = (sliderDefinitions.find(definition => definition[0] === settingKey) || [])[2];
+    outputElement.textContent = tickerSettings[settingKey] + (unit ? ' ' + unit : '');
   }
 
-  vars();
-  json();
+  applyTickerStyles();
+  updateJsonPreview();
 });
 
-document.querySelectorAll('[data-seg]').forEach(g => {
-  const sync = () => g.querySelectorAll('button').forEach(b => {
-    b.setAttribute('aria-pressed', b.dataset.v === S[g.dataset.seg]);
+document.querySelectorAll('[data-seg]').forEach(segmentElement => {
+  const syncSegmentButtons = () => segmentElement.querySelectorAll('button').forEach(button => {
+    button.setAttribute('aria-pressed', button.dataset.v === tickerSettings[segmentElement.dataset.seg]);
   });
 
-  sync();
-  g.onclick = e => {
-    const b = e.target.closest('button');
-    if (!b) {
+  syncSegmentButtons();
+  segmentElement.onclick = event => {
+    const button = event.target.closest('button');
+    if (!button) {
       return;
     }
 
-    S[g.dataset.seg] = b.dataset.v;
-    sync();
-    vars();
-    json();
+    tickerSettings[segmentElement.dataset.seg] = button.dataset.v;
+    syncSegmentButtons();
+    applyTickerStyles();
+    updateJsonPreview();
   };
 });
 
-$('#bxa-langs').onclick = e => {
-  const b = e.target.closest('button');
-  if (!b) {
+querySelector('#bxa-langs').onclick = event => {
+  const button = event.target.closest('button');
+  if (!button) {
     return;
   }
 
-  st.lang = b.dataset.l;
-  document.querySelectorAll('#bxa-langs button').forEach(x => {
-    x.setAttribute('aria-pressed', x === b);
+  tickerState.lang = button.dataset.l;
+  document.querySelectorAll('#bxa-langs button').forEach(languageButton => {
+    languageButton.setAttribute('aria-pressed', languageButton === button);
   });
-  $('#bxa-label').value = st.label[st.lang] || '';
+  querySelector('#bxa-label').value = tickerState.label[tickerState.lang] || '';
   list();
   render();
 };
 
-$('#bxa-label').value = st.label.de;
-$('#bxa-label').oninput = e => {
-  st.label[st.lang] = e.target.value;
+querySelector('#bxa-label').value = tickerState.label.de;
+querySelector('#bxa-label').oninput = event => {
+  tickerState.label[tickerState.lang] = event.target.value;
   render();
 };
 
-const L = $('#bxa-list');
-L.addEventListener('input', e => {
-  const r = e.target.closest('.bxa-it');
-  const f = e.target.dataset.f;
-  if (!r || !f) {
+const messageListElement = querySelector('#bxa-list');
+messageListElement.addEventListener('input', event => {
+  const itemRow = event.target.closest('.bxa-it');
+  const fieldName = event.target.dataset.f;
+  if (!itemRow || !fieldName) {
     return;
   }
 
-  const it = st.items[+r.dataset.i];
-  if (f === 'text') {
-    it.text[st.lang] = e.target.value;
-  } else if (f === 'active') {
-    it.active = e.target.checked;
+  const item = tickerState.items[+itemRow.dataset.i];
+  if (fieldName === 'text') {
+    item.text[tickerState.lang] = event.target.value;
+  } else if (fieldName === 'active') {
+    item.active = event.target.checked;
   } else {
-    it[f] = e.target.value;
+    item[fieldName] = event.target.value;
   }
   render();
 });
 
-L.addEventListener('click', e => {
-  if (e.target.dataset.del !== undefined) {
-    st.items.splice(+e.target.closest('.bxa-it').dataset.i, 1);
+messageListElement.addEventListener('click', event => {
+  if (event.target.dataset.del !== undefined) {
+    tickerState.items.splice(+event.target.closest('.bxa-it').dataset.i, 1);
     list();
     render();
   }
 });
 
-let drag = null;
-L.addEventListener('dragstart', e => {
-  const r = e.target.closest('.bxa-it');
-  drag = +r.dataset.i;
-  e.dataTransfer.setDragImage(r, 10, 10);
+let draggedItemIndex = null;
+messageListElement.addEventListener('dragstart', event => {
+  const itemRow = event.target.closest('.bxa-it');
+  draggedItemIndex = +itemRow.dataset.i;
+  event.dataTransfer.setDragImage(itemRow, 10, 10);
 });
 
-L.addEventListener('dragover', e => {
-  e.preventDefault();
-  L.querySelectorAll('.bxa-over').forEach(x => x.classList.remove('bxa-over'));
-  e.target.closest('.bxa-it')?.classList.add('bxa-over');
+messageListElement.addEventListener('dragover', event => {
+  event.preventDefault();
+  messageListElement.querySelectorAll('.bxa-over').forEach(itemRow => itemRow.classList.remove('bxa-over'));
+  event.target.closest('.bxa-it')?.classList.add('bxa-over');
 });
 
-L.addEventListener('drop', e => {
-  e.preventDefault();
-  const r = e.target.closest('.bxa-it');
-  if (r && drag !== null) {
-    move(drag, +r.dataset.i);
+messageListElement.addEventListener('drop', event => {
+  event.preventDefault();
+  const itemRow = event.target.closest('.bxa-it');
+  if (itemRow && draggedItemIndex !== null) {
+    moveItem(draggedItemIndex, +itemRow.dataset.i);
   }
-  drag = null;
+  draggedItemIndex = null;
 });
 
-L.addEventListener('dragend', () => {
-  L.querySelectorAll('.bxa-over').forEach(x => x.classList.remove('bxa-over'));
+messageListElement.addEventListener('dragend', () => {
+  messageListElement.querySelectorAll('.bxa-over').forEach(itemRow => itemRow.classList.remove('bxa-over'));
 });
 
-L.addEventListener('keydown', e => {
-  const h = e.target.closest('.bxa-hd');
-  if (!h || !['ArrowUp', 'ArrowDown'].includes(e.key)) {
+messageListElement.addEventListener('keydown', event => {
+  const dragHandle = event.target.closest('.bxa-hd');
+  if (!dragHandle || !['ArrowUp', 'ArrowDown'].includes(event.key)) {
     return;
   }
 
-  e.preventDefault();
-  const i = +h.closest('.bxa-it').dataset.i;
-  const n = e.key === 'ArrowUp' ? i - 1 : i + 1;
-  move(i, n);
-  L.querySelector(`.bxa-it[data-i="${n}"] .bxa-hd`)?.focus();
+  event.preventDefault();
+  const currentIndex = +dragHandle.closest('.bxa-it').dataset.i;
+  const targetIndex = event.key === 'ArrowUp' ? currentIndex - 1 : currentIndex + 1;
+  moveItem(currentIndex, targetIndex);
+  messageListElement.querySelector(`.bxa-it[data-i="${targetIndex}"] .bxa-hd`)?.focus();
 });
 
-$('#bxa-add').onclick = () => {
-  st.items.push({
+querySelector('#bxa-add').onclick = () => {
+  tickerState.items.push({
     active: true,
     link: '',
     from: '',
     to: '',
-    text: {
-      de: '',
-      en: ''
-    }
+    text: Object.fromEntries(availableLanguages.map(languageCode => [languageCode, '']))
   });
   list();
   render();
-  L.querySelector('.bxa-it:last-child [data-f=text]').focus();
+  messageListElement.querySelector('.bxa-it:last-child [data-f=text]').focus();
 };
 
-$('#bxa-save').onclick = () => {
-  const t = $('#bxa-toast');
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 1800);
+querySelector('#bxa-save').onclick = () => {
+  const toastElement = querySelector('#bxa-toast');
+  toastElement.classList.add('on');
+  setTimeout(() => toastElement.classList.remove('on'), 1800);
 };
 
-addEventListener('resize', vars);
+addEventListener('resize', applyTickerStyles);
 list();
 render();
 
 /* Dauer nach dem Laden der Schriften neu berechnen (Textbreite ändert sich) */
 if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(vars);
+  document.fonts.ready.then(applyTickerStyles);
 }
 });
 </script>

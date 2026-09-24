@@ -63,66 +63,72 @@ $messageStack->output();
             <strong><?php echo MODULE_BX_MODIFIED_TICKER; ?></strong>
             <div class="bxa-tools">
               <div class="bxa-seg" id="bxa-langs" role="group" aria-label="Sprache">
-                <button data-l="de" aria-pressed="true">Deutsch</button>
-                <button data-l="en" aria-pressed="false">English</button>
+                <?php 
+                  $languages = xtc_get_languages();
+                  $activeLanguage = $_SESSION['language_code'] ?? 'de';
+
+                  foreach ($languages as $language) {
+                    $code = $language['code'];
+                    $name = $language['name'];
+                    $ariaPressed = $code === $activeLanguage ? 'true' : 'false';
+                    echo '<button data-l="' . $code . '" aria-pressed="' . $ariaPressed . '">' . $name . '</button>'. PHP_EOL;
+                  }
+                ?>
               </div>
-              <button class="bxa-btn" id="bxa-save">Speichern</button>
+              <button class="bxa-btn" id="bxa-save"><?php echo MODULE_BX_MODIFIED_TICKER_SAVE; ?></button>
             </div>
           </div>
 
-          <article class="bx-panel">
+          <article class="bx-panel" style="margin: 0; padding: 0;">
 
-<div class="bxa-body">
-<div class="bxa-stage">
-  <div class="bxa-frame" id="bxa-frame">
-    <div class="bx-ticker" id="bxa-tk"></div>
-    <div class="bxa-page"><b>Vorschau</b>Änderungen wirken sofort. Über den Tabs wechselst du die Sprache der Texte.</div>
-  </div>
-</div>
+            <div class="bxa-body">
+            <div class="bxa-stage">
+              <div class="bxa-frame" id="bxa-frame">
+                <div class="bx-ticker" id="bxa-tk"></div>
+                <div class="bxa-page"><?php echo MODULE_BX_MODIFIED_TICKER_PREVIEW; ?></div>
+              </div>
+            </div>
 
-<div class="bxa-cols">
-  <section>
-    <h2>Darstellung</h2>
-    <div id="bxa-sliders"></div>
-    <div class="bxa-row bxa-plain"><span>Pause bei Hover</span><input class="bxa-sw" type="checkbox" data-k="pause"></div>
-    <h3>Richtung</h3>
-    <div class="bxa-seg" data-seg="dir"><button data-v="left">Nach links</button><button data-v="right">Nach rechts</button></div>
-    <h3>Position</h3>
-    <div class="bxa-seg" data-seg="pos"><button data-v="top">Oben</button><button data-v="bottom">Unten</button></div>
-    <h3>Farben</h3>
-    <div id="bxa-colors"></div>
-    <h3>Label</h3>
-    <input class="bxa-txt" id="bxa-label" aria-label="Label-Text">
-    <p class="bxa-hint">Reduzierte Bewegung wird immer respektiert und ist nicht abschaltbar.</p>
-  </section>
+            <div class="bxa-cols">
+              <section>
+                <h2><?php echo MODULE_BX_MODIFIED_TICKER_PRESENTATION; ?></h2>
+                <div id="bxa-sliders"></div>
+                
+                <div class="bxa-row bxa-plain">
+                  <span><?php echo MODULE_BX_MODIFIED_TICKER_HOVER; ?></span>
+                  <input class="bxa-sw" type="checkbox" data-k="pause">
+                </div>
 
-  <section>
-    <h2>Meldungen</h2>
-    <div id="bxa-list"></div>
-    <button class="bxa-btn bxa-ghost" id="bxa-add">+ Meldung hinzufügen</button>
-    <p class="bxa-hint">Reihenfolge per Ziehen am Griff oder mit Pfeiltasten. Fehlt ein Text in der gewählten Sprache, wird der deutsche verwendet.</p>
-    <details><summary>Werte, wie das Modul sie speichern würde</summary><pre id="bxa-json"></pre></details>
-  </section>
-</div>
-<div id="bxa-toast" role="status">Gespeichert (Prototyp)</div>
-</div> <!-- .bxa-body -->
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_DIR; ?></h3>
+                <div class="bxa-seg" data-seg="dir">
+                  <button data-v="left"><?php echo MODULE_BX_MODIFIED_TICKER_LEFT; ?></button>
+                  <button data-v="right"><?php echo MODULE_BX_MODIFIED_TICKER_RIGHT; ?></button>
+                </div>
 
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_POS; ?></h3>
+                <div class="bxa-seg" data-seg="pos">
+                  <button data-v="top"><?php echo MODULE_BX_MODIFIED_TICKER_TOP; ?>
+                  </button><button data-v="bottom"><?php echo MODULE_BX_MODIFIED_TICKER_BOTTOM; ?></button>
+                </div>
 
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_COLORS; ?></h3>
+                <div id="bxa-colors"></div>
+                
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_LABEL; ?></h3>
+                <input class="bxa-txt" id="bxa-label" aria-label="Label-Text">
+                <p class="bxa-hint"><?php echo MODULE_BX_MODIFIED_TICKER_HINT; ?></p>
+              </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              <section>
+                <h2><?php echo MODULE_BX_MODIFIED_TICKER_MESSAGE; ?></h2>
+                <div id="bxa-list"></div>
+                <button class="bxa-btn bxa-ghost" id="bxa-add"><?php echo MODULE_BX_MODIFIED_TICKER_ADD_MESSAGE; ?></button>
+                <p class="bxa-hint"><?php echo MODULE_BX_MODIFIED_TICKER_HINT_ORDER; ?></p>
+                <details><summary><?php echo MODULE_BX_MODIFIED_TICKER_HINT_JSON; ?></summary><pre id="bxa-json"></pre></details>
+              </section>
+            </div>
+            <div id="bxa-toast" role="status">Gespeichert (Prototyp)</div>
+            </div> <!-- .bxa-body -->
 
           </article> <!-- bx-panel -->
 
