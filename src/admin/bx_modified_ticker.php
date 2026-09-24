@@ -57,23 +57,22 @@ $messageStack->output();
 
       <div class="bx-grid-full">
 
-        <section class="bx-main-content">
+        <section class="bx-main-content bxa">
 
-          <div class="bx-headboard">
+          <div class="bx-headboard bxa-headboard">
             <strong><?php echo MODULE_BX_MODIFIED_TICKER; ?></strong>
+            <div class="bxa-tools">
+              <div class="bxa-seg" id="bxa-langs" role="group" aria-label="Sprache">
+                <button data-l="de" aria-pressed="true">Deutsch</button>
+                <button data-l="en" aria-pressed="false">English</button>
+              </div>
+              <button class="bxa-btn" id="bxa-save">Speichern</button>
+            </div>
           </div>
 
           <article class="bx-panel">
 
-<div class="bxa">
-<header class="bxa-top">
-  <div class="bxa-seg" id="bxa-langs" role="group" aria-label="Sprache">
-    <button data-l="de" aria-pressed="true">Deutsch</button>
-    <button data-l="en" aria-pressed="false">English</button>
-  </div>
-  <button class="bxa-btn" id="bxa-save">Speichern</button>
-</header>
-
+<div class="bxa-body">
 <div class="bxa-stage">
   <div class="bxa-frame" id="bxa-frame">
     <div class="bx-ticker" id="bxa-tk"></div>
@@ -106,7 +105,7 @@ $messageStack->output();
   </section>
 </div>
 <div id="bxa-toast" role="status">Gespeichert (Prototyp)</div>
-</div> <!-- .bxa -->
+</div> <!-- .bxa-body -->
 
 
 

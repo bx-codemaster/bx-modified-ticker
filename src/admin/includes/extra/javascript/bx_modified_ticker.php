@@ -21,7 +21,11 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
     basename($_SERVER['PHP_SELF']) == 'bx_modified_ticker.php') {
 ?>
  <script>
-    "use strict";
+/* Läuft erst nach dem Laden des DOM (extra/javascript wird im <head> eingebunden)
+   und in eigenem Scope, damit weder jQuery ($) noch andere Admin-Skripte
+   durch globale Namen überschrieben werden. */
+document.addEventListener('DOMContentLoaded', function () {
+"use strict";
 const S = {
   speed: 60,
   gap: 3,
@@ -372,6 +376,12 @@ $('#bxa-save').onclick = () => {
 addEventListener('resize', vars);
 list();
 render();
+
+/* Dauer nach dem Laden der Schriften neu berechnen (Textbreite ändert sich) */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(vars);
+}
+});
 </script>
 <?php
 }

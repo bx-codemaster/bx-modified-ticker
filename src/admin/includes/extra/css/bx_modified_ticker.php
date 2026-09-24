@@ -48,6 +48,9 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   --bx-fade: 4rem;
   --bx-dur: 30s;
 
+}
+
+.bxa .bxa-body {
   margin: 0;
   background: var(--bxa-bg);
   color: var(--bxa-ink);
@@ -68,19 +71,33 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   color: inherit;
 }
 
-/* Titelzeile: Sprach-Tabs und Speichern rechts */
-.bxa .bxa-top .bxa-seg {
-  margin-left: auto;
+/* Tools (Sprache, Speichern) in der bx-headboard-Leiste */
+.bx-headboard.bxa-headboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.bxa .bxa-top {
+.bxa .bxa-tools {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  padding: .9rem 1.25rem;
-  background: var(--bxa-pane);
-  border-bottom: 1px solid var(--bxa-line);
+  gap: .5rem;
+}
+
+.bxa .bxa-tools .bxa-seg {
+  border-radius: 6px;
+}
+
+.bxa .bxa-tools .bxa-seg button {
+  padding: .2rem .6rem;
+  font-size: .85em;
+}
+
+.bxa .bxa-tools .bxa-btn {
+  padding: .25rem .75rem;
+  border-radius: 6px;
+  font-size: .85em;
 }
 
 .bxa .bxa-seg {
