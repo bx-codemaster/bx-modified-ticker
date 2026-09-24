@@ -21,151 +21,148 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
     basename($_SERVER['PHP_SELF']) == 'bx_modified_ticker.php') {
 ?>
 <style>
-:root {
-  color-scheme: light dark;
-  --bg: #f4f6f8;
-  --pane: #fff;
-  --ink: #141a22;
-  --mut: #5d6877;
-  --line: #dfe4ea;
-  --acc: #AF417E;
-  --accInk: #fff;
-  --r: 10px;
+/* ==========================================================
+   BX Modified Ticker – Admin-CSS
+   Alles unterhalb von .bxa gescoped, damit das modified-Admin-UI
+   nicht beeinflusst wird. Der Ticker-Block (.bx-ticker*) ist bewusst
+   unscoped und wird im Frontend identisch verwendet.
+   ========================================================== */
+.bxa {
+  --bxa-bg: #f4f6f8;
+  --bxa-pane: #fff;
+  --bxa-ink: #141a22;
+  --bxa-mut: #5d6877;
+  --bxa-line: #dfe4ea;
+  --bxa-acc: #AF417E;
+  --bxa-accInk: #fff;
+  --bxa-r: 10px;
 
-  --bx-bg: var(--bg);
-  --bx-ink: var(--ink);
-  --bx-accent: var(--acc);
-  --bx-line: var(--line);
+  /* Standardwerte der Vorschau (JS überschreibt sie auf #bxa-tk) */
+  --bx-bg: var(--bxa-bg);
+  --bx-ink: var(--bxa-ink);
+  --bx-accent: var(--bxa-acc);
+  --bx-line: var(--bxa-line);
   --bx-gap: 3rem;
   --bx-size: 15px;
   --bx-pad: .8rem;
   --bx-fade: 4rem;
   --bx-dur: 30s;
+
+  margin: 0;
+  background: var(--bxa-bg);
+  color: var(--bxa-ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  text-align: left;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1216;
-    --pane: #171c22;
-    --ink: #e9edf2;
-    --mut: #93a0b0;
-    --line: #2a323c;
-    --acc: #e055a2;
-    --accInk: #062b27;
-  }
-}
-
-* {
+.bxa,
+.bxa *,
+.bxa *::before,
+.bxa *::after {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
-
-button,
-input {
+.bxa button,
+.bxa input {
   font: inherit;
   color: inherit;
 }
 
-.top {
+/* Titelzeile: Sprach-Tabs und Speichern rechts */
+.bxa .bxa-top .bxa-seg {
+  margin-left: auto;
+}
+
+.bxa .bxa-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   padding: .9rem 1.25rem;
-  background: var(--pane);
-  border-bottom: 1px solid var(--line);
+  background: var(--bxa-pane);
+  border-bottom: 1px solid var(--bxa-line);
 }
 
-.top h1 {
-  font-size: 1.05rem;
-  margin: 0;
-  margin-right: auto;
-}
-
-.seg {
+.bxa .bxa-seg {
   display: inline-flex;
-  border: 1px solid var(--line);
+  border: 1px solid var(--bxa-line);
   border-radius: 8px;
   overflow: hidden;
 }
 
-.seg button {
+.bxa .bxa-seg button {
   border: 0;
   background: none;
   padding: .4rem .8rem;
   cursor: pointer;
 }
 
-.seg button[aria-pressed="true"] {
-  background: var(--acc);
-  color: var(--accInk);
+.bxa .bxa-seg button[aria-pressed="true"] {
+  background: var(--bxa-acc);
+  color: var(--bxa-accInk);
   font-weight: 600;
 }
 
-.btn {
+.bxa .bxa-btn {
   border: 0;
   border-radius: 8px;
   padding: .5rem 1rem;
-  background: var(--acc);
-  color: var(--accInk);
+  background: var(--bxa-acc);
+  color: var(--bxa-accInk);
   font-weight: 600;
   cursor: pointer;
 }
 
-.btn.ghost {
+.bxa .bxa-btn.bxa-ghost {
   background: none;
-  color: var(--ink);
-  border: 1px dashed var(--line);
+  color: var(--bxa-ink);
+  border: 1px dashed var(--bxa-line);
   font-weight: 500;
 }
 
-:focus-visible {
-  outline: 2px solid var(--acc);
+.bxa :focus-visible {
+  outline: 2px solid var(--bxa-acc);
   outline-offset: 2px;
 }
 
 /* Live-Vorschau */
-.stage {
+
+.bxa .bxa-stage {
   position: sticky;
   top: 0;
   z-index: 5;
   padding: 1rem 1.25rem;
-  background: var(--bg);
+  background: var(--bxa-bg);
 }
 
-.frame {
+.bxa .bxa-frame {
   display: flex;
   flex-direction: column;
   min-height: 9rem;
-  border: 1px solid var(--line);
-  border-radius: var(--r);
+  border: 1px solid var(--bxa-line);
+  border-radius: var(--bxa-r);
   overflow: hidden;
-  background: var(--pane);
+  background: var(--bxa-pane);
 }
 
-.frame[data-pos="bottom"] .bx-ticker {
+.bxa .bxa-frame[data-pos="bottom"] .bx-ticker {
   order: 2;
   margin-top: auto;
 }
 
-.frame .page {
+.bxa .bxa-frame .bxa-page {
   padding: 1rem 1.25rem;
-  color: var(--mut);
+  color: var(--bxa-mut);
 }
 
-.page b {
+.bxa .bxa-page b {
   display: block;
-  color: var(--ink);
+  color: var(--bxa-ink);
   margin-bottom: .25rem;
 }
 
 /* Ticker (identisch zum Frontend, Präfix bx-) */
+
 .bx-ticker {
   display: flex;
   align-items: stretch;
@@ -193,7 +190,7 @@ input {
   block-size: .55em;
   border-radius: 50%;
   background: var(--bx-accent);
-  animation: bxp 2s ease-in-out infinite;
+  animation: bx-ticker-pulse 2s ease-in-out infinite;
 }
 
 .bx-ticker-viewport {
@@ -222,7 +219,7 @@ input {
   padding: 0;
   list-style: none;
   white-space: nowrap;
-  animation: bxs var(--bx-dur, 30s) linear infinite;
+  animation: bx-ticker-scroll var(--bx-dur, 30s) linear infinite;
   will-change: transform;
 }
 
@@ -239,13 +236,13 @@ input {
   text-decoration: none;
 }
 
-@keyframes bxs {
+@keyframes bx-ticker-scroll {
   to {
     transform: translateX(calc(-100% - var(--bx-gap)));
   }
 }
 
-@keyframes bxp {
+@keyframes bx-ticker-pulse {
   50% {
     opacity: .35;
   }
@@ -253,7 +250,7 @@ input {
 
 @media (prefers-reduced-motion: reduce) {
   .bx-ticker-group,
-  .bx-ticker-label::before {
+.bx-ticker-label::before {
     animation: none;
   }
 
@@ -264,7 +261,8 @@ input {
 }
 
 /* Layout */
-.cols {
+
+.bxa .bxa-cols {
   display: grid;
   grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
   gap: 1.25rem;
@@ -273,31 +271,31 @@ input {
 }
 
 @media (max-width: 860px) {
-  .cols {
+  .bxa .bxa-cols {
     grid-template-columns: 1fr;
   }
 }
 
-section {
-  background: var(--pane);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
+.bxa section {
+  background: var(--bxa-pane);
+  border: 1px solid var(--bxa-line);
+  border-radius: var(--bxa-r);
   padding: 1rem 1.1rem;
 }
 
-h2 {
+.bxa h2 {
   font-size: .95rem;
   margin: 0 0 .8rem;
 }
 
-h3 {
+.bxa h3 {
   font-size: .85rem;
   margin: 1.1rem 0 .5rem;
-  color: var(--mut);
+  color: var(--bxa-mut);
   font-weight: 600;
 }
 
-.row {
+.bxa .bxa-row {
   display: grid;
   grid-template-columns: 6.5rem 1fr 4.6rem;
   align-items: center;
@@ -305,43 +303,43 @@ h3 {
   margin: .55rem 0;
 }
 
-.row output {
+.bxa .bxa-row output {
   text-align: right;
-  color: var(--mut);
+  color: var(--bxa-mut);
   font-variant-numeric: tabular-nums;
 }
 
-.row.plain {
+.bxa .bxa-row.bxa-plain {
   grid-template-columns: 1fr auto;
 }
 
-input[type="range"] {
+.bxa input[type="range"] {
   width: 100%;
-  accent-color: var(--acc);
+  accent-color: var(--bxa-acc);
 }
 
-input[type="color"] {
+.bxa input[type="color"] {
   inline-size: 2.2rem;
   block-size: 1.8rem;
   padding: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--bxa-line);
   border-radius: 6px;
   background: none;
   cursor: pointer;
 }
 
-.sw {
+.bxa .bxa-sw {
   appearance: none;
   inline-size: 2.4rem;
   block-size: 1.4rem;
   border-radius: 99px;
-  background: var(--line);
+  background: var(--bxa-line);
   position: relative;
   cursor: pointer;
   transition: background .15s;
 }
 
-.sw::after {
+.bxa .bxa-sw::after {
   content: "";
   position: absolute;
   inset: .15rem auto .15rem .15rem;
@@ -351,102 +349,103 @@ input[type="color"] {
   transition: transform .15s;
 }
 
-.sw:checked {
-  background: var(--acc);
+.bxa .bxa-sw:checked {
+  background: var(--bxa-acc);
 }
 
-.sw:checked::after {
+.bxa .bxa-sw:checked::after {
   transform: translateX(1rem);
 }
 
-.txt {
+.bxa .bxa-txt {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid var(--bxa-line);
   border-radius: 7px;
   padding: .4rem .6rem;
-  background: var(--bg);
+  background: var(--bxa-bg);
 }
 
 /* Meldungen */
-.it {
-  border: 1px solid var(--line);
+
+.bxa .bxa-it {
+  border: 1px solid var(--bxa-line);
   border-radius: 8px;
   padding: .6rem;
   margin-bottom: .6rem;
-  background: var(--bg);
+  background: var(--bxa-bg);
 }
 
-.it.over {
-  outline: 2px dashed var(--acc);
+.bxa .bxa-it.bxa-over {
+  outline: 2px dashed var(--bxa-acc);
 }
 
-.l1 {
+.bxa .bxa-l1 {
   display: grid;
   grid-template-columns: auto 1fr auto auto;
   gap: .6rem;
   align-items: center;
 }
 
-.l2 {
+.bxa .bxa-l2 {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: .5rem;
   margin-top: .5rem;
 }
 
-.l2 label {
+.bxa .bxa-l2 label {
   font-size: .75rem;
-  color: var(--mut);
+  color: var(--bxa-mut);
 }
 
-.hd {
+.bxa .bxa-hd {
   cursor: grab;
   user-select: none;
-  color: var(--mut);
+  color: var(--bxa-mut);
   padding: .2rem .35rem;
   border-radius: 6px;
 }
 
-.x {
+.bxa .bxa-x {
   border: 0;
   background: none;
-  color: var(--mut);
+  color: var(--bxa-mut);
   cursor: pointer;
   font-size: 1.1rem;
 }
 
-.hint {
-  color: var(--mut);
+.bxa .bxa-hint {
+  color: var(--bxa-mut);
   font-size: .8rem;
   margin: .4rem 0 0;
 }
 
-pre {
+.bxa pre {
   margin: 0;
   max-height: 13rem;
   overflow: auto;
   font-size: .75rem;
-  background: var(--bg);
-  border: 1px solid var(--line);
+  background: var(--bxa-bg);
+  border: 1px solid var(--bxa-line);
   border-radius: 8px;
   padding: .7rem;
 }
 
-details {
+.bxa details {
   margin-top: 1rem;
 }
 
-summary {
+.bxa summary {
   cursor: pointer;
-  color: var(--mut);
+  color: var(--bxa-mut);
 }
 
-#toast {
+.bxa #bxa-toast {
   position: fixed;
   right: 1rem;
   bottom: 1rem;
-  background: var(--acc);
-  color: var(--accInk);
+  background: var(--bxa-acc);
+  color: var(--bxa-accInk);
   padding: .6rem 1rem;
   border-radius: 8px;
   opacity: 0;
@@ -454,7 +453,7 @@ summary {
   pointer-events: none;
 }
 
-#toast.on {
+.bxa #bxa-toast.on {
   opacity: 1;
 }
 </style>

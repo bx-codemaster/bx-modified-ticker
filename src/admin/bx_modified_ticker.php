@@ -65,47 +65,48 @@ $messageStack->output();
 
           <article class="bx-panel">
 
-<header class="top">
-  <h1>Ticker · bx_modified_ticker</h1>
-  <div class="seg" id="langs" role="group" aria-label="Sprache">
+<div class="bxa">
+<header class="bxa-top">
+  <div class="bxa-seg" id="bxa-langs" role="group" aria-label="Sprache">
     <button data-l="de" aria-pressed="true">Deutsch</button>
     <button data-l="en" aria-pressed="false">English</button>
   </div>
-  <button class="btn" id="save">Speichern</button>
+  <button class="bxa-btn" id="bxa-save">Speichern</button>
 </header>
 
-<div class="stage">
-  <div class="frame" id="frame">
-    <div class="bx-ticker" id="tk"></div>
-    <div class="page"><b>Vorschau</b>Änderungen wirken sofort. Über den Tabs wechselst du die Sprache der Texte.</div>
+<div class="bxa-stage">
+  <div class="bxa-frame" id="bxa-frame">
+    <div class="bx-ticker" id="bxa-tk"></div>
+    <div class="bxa-page"><b>Vorschau</b>Änderungen wirken sofort. Über den Tabs wechselst du die Sprache der Texte.</div>
   </div>
 </div>
 
-<div class="cols">
+<div class="bxa-cols">
   <section>
     <h2>Darstellung</h2>
-    <div id="sliders"></div>
-    <div class="row plain"><span>Pause bei Hover</span><input class="sw" type="checkbox" data-k="pause"></div>
+    <div id="bxa-sliders"></div>
+    <div class="bxa-row bxa-plain"><span>Pause bei Hover</span><input class="bxa-sw" type="checkbox" data-k="pause"></div>
     <h3>Richtung</h3>
-    <div class="seg" data-seg="dir"><button data-v="left">Nach links</button><button data-v="right">Nach rechts</button></div>
+    <div class="bxa-seg" data-seg="dir"><button data-v="left">Nach links</button><button data-v="right">Nach rechts</button></div>
     <h3>Position</h3>
-    <div class="seg" data-seg="pos"><button data-v="top">Oben</button><button data-v="bottom">Unten</button></div>
+    <div class="bxa-seg" data-seg="pos"><button data-v="top">Oben</button><button data-v="bottom">Unten</button></div>
     <h3>Farben</h3>
-    <div id="colors"></div>
+    <div id="bxa-colors"></div>
     <h3>Label</h3>
-    <input class="txt" id="label" aria-label="Label-Text">
-    <p class="hint">Reduzierte Bewegung wird immer respektiert und ist nicht abschaltbar.</p>
+    <input class="bxa-txt" id="bxa-label" aria-label="Label-Text">
+    <p class="bxa-hint">Reduzierte Bewegung wird immer respektiert und ist nicht abschaltbar.</p>
   </section>
 
   <section>
     <h2>Meldungen</h2>
-    <div id="list"></div>
-    <button class="btn ghost" id="add">+ Meldung hinzufügen</button>
-    <p class="hint">Reihenfolge per Ziehen am Griff oder mit Pfeiltasten. Fehlt ein Text in der gewählten Sprache, wird der deutsche verwendet.</p>
-    <details><summary>Werte, wie das Modul sie speichern würde</summary><pre id="json"></pre></details>
+    <div id="bxa-list"></div>
+    <button class="bxa-btn bxa-ghost" id="bxa-add">+ Meldung hinzufügen</button>
+    <p class="bxa-hint">Reihenfolge per Ziehen am Griff oder mit Pfeiltasten. Fehlt ein Text in der gewählten Sprache, wird der deutsche verwendet.</p>
+    <details><summary>Werte, wie das Modul sie speichern würde</summary><pre id="bxa-json"></pre></details>
   </section>
 </div>
-<div id="toast" role="status">Gespeichert (Prototyp)</div>
+<div id="bxa-toast" role="status">Gespeichert (Prototyp)</div>
+</div> <!-- .bxa -->
 
 
 

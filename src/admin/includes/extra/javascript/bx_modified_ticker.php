@@ -21,7 +21,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
     basename($_SERVER['PHP_SELF']) == 'bx_modified_ticker.php') {
 ?>
  <script>
-    'use strict';
+    "use strict";
 const S = {
   speed: 60,
   gap: 3,
@@ -93,7 +93,7 @@ const CO = [
 ];
 
 const $ = s => document.querySelector(s);
-const tk = $('#tk');
+const tk = $('#bxa-tk');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({
   '&': '&amp;',
   '<': '&lt;',
@@ -103,16 +103,16 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({
 }[c]));
 const T = o => o[st.lang] || o.de || '';
 
-$('#sliders').innerHTML = SL.map(([k, n, u, a, b, s]) => `
-  <label class="row">
+$('#bxa-sliders').innerHTML = SL.map(([k, n, u, a, b, s]) => `
+  <label class="bxa-row">
     <span>${n}</span>
     <input type="range" data-k="${k}" min="${a}" max="${b}" step="${s}" value="${S[k]}">
     <output data-o="${k}">${S[k]} ${u}</output>
   </label>
 `).join('');
 
-$('#colors').innerHTML = CO.map(([k, n]) => `
-  <label class="row plain">
+$('#bxa-colors').innerHTML = CO.map(([k, n]) => `
+  <label class="bxa-row bxa-plain">
     <span>${n}</span>
     <span>
       <output data-o="${k}" style="color:var(--mut);margin-right:.5rem">${S[k]}</output>
@@ -137,7 +137,7 @@ function vars() {
 
   tk.classList.toggle('rev', S.dir === 'right');
   tk.classList.toggle('pause', S.pause);
-  $('#frame').dataset.pos = S.pos;
+  $('#bxa-frame').dataset.pos = S.pos;
 
   const g = tk.querySelector('.bx-ticker-group');
   if (g) {
@@ -184,7 +184,7 @@ function json() {
     BX_TICKER_COLOR_LINE: S.line
   };
 
-  $('#json').textContent = JSON.stringify({
+  $('#bxa-json').textContent = JSON.stringify({
     configuration: K,
     label: st.label,
     bx_ticker_items: st.items
@@ -192,18 +192,18 @@ function json() {
 }
 
 function list() {
-  $('#list').innerHTML = st.items.map((it, i) => `
-    <div class="it" data-i="${i}">
-      <div class="l1">
-        <span class="hd" draggable="true" tabindex="0" role="button" aria-label="Verschieben">⠿</span>
-        <input class="txt" data-f="text" value="${esc(it.text[st.lang] || '')}" placeholder="${st.lang === 'de' ? 'Text der Meldung' : 'Fallback: ' + esc(it.text.de || '')}" aria-label="Text">
-        <input class="sw" type="checkbox" data-f="active" ${it.active ? 'checked' : ''} aria-label="Aktiv">
-        <button class="x" data-del aria-label="Löschen">✕</button>
+  $('#bxa-list').innerHTML = st.items.map((it, i) => `
+    <div class="bxa-it" data-i="${i}">
+      <div class="bxa-l1">
+        <span class="bxa-hd" draggable="true" tabindex="0" role="button" aria-label="Verschieben">⠿</span>
+        <input class="bxa-txt" data-f="text" value="${esc(it.text[st.lang] || '')}" placeholder="${st.lang === 'de' ? 'Text der Meldung' : 'Fallback: ' + esc(it.text.de || '')}" aria-label="Text">
+        <input class="bxa-sw" type="checkbox" data-f="active" ${it.active ? 'checked' : ''} aria-label="Aktiv">
+        <button class="bxa-x" data-del aria-label="Löschen">✕</button>
       </div>
-      <div class="l2">
-        <label>Link<input class="txt" data-f="link" value="${esc(it.link)}" placeholder="optional"></label>
-        <label>Von<input class="txt" type="date" data-f="from" value="${it.from}"></label>
-        <label>Bis<input class="txt" type="date" data-f="to" value="${it.to}"></label>
+      <div class="bxa-l2">
+        <label>Link<input class="bxa-txt" data-f="link" value="${esc(it.link)}" placeholder="optional"></label>
+        <label>Von<input class="bxa-txt" type="date" data-f="from" value="${it.from}"></label>
+        <label>Bis<input class="bxa-txt" type="date" data-f="to" value="${it.to}"></label>
       </div>
     </div>
   `).join('');
@@ -260,30 +260,30 @@ document.querySelectorAll('[data-seg]').forEach(g => {
   };
 });
 
-$('#langs').onclick = e => {
+$('#bxa-langs').onclick = e => {
   const b = e.target.closest('button');
   if (!b) {
     return;
   }
 
   st.lang = b.dataset.l;
-  document.querySelectorAll('#langs button').forEach(x => {
+  document.querySelectorAll('#bxa-langs button').forEach(x => {
     x.setAttribute('aria-pressed', x === b);
   });
-  $('#label').value = st.label[st.lang] || '';
+  $('#bxa-label').value = st.label[st.lang] || '';
   list();
   render();
 };
 
-$('#label').value = st.label.de;
-$('#label').oninput = e => {
+$('#bxa-label').value = st.label.de;
+$('#bxa-label').oninput = e => {
   st.label[st.lang] = e.target.value;
   render();
 };
 
-const L = $('#list');
+const L = $('#bxa-list');
 L.addEventListener('input', e => {
-  const r = e.target.closest('.it');
+  const r = e.target.closest('.bxa-it');
   const f = e.target.dataset.f;
   if (!r || !f) {
     return;
@@ -302,7 +302,7 @@ L.addEventListener('input', e => {
 
 L.addEventListener('click', e => {
   if (e.target.dataset.del !== undefined) {
-    st.items.splice(+e.target.closest('.it').dataset.i, 1);
+    st.items.splice(+e.target.closest('.bxa-it').dataset.i, 1);
     list();
     render();
   }
@@ -310,20 +310,20 @@ L.addEventListener('click', e => {
 
 let drag = null;
 L.addEventListener('dragstart', e => {
-  const r = e.target.closest('.it');
+  const r = e.target.closest('.bxa-it');
   drag = +r.dataset.i;
   e.dataTransfer.setDragImage(r, 10, 10);
 });
 
 L.addEventListener('dragover', e => {
   e.preventDefault();
-  L.querySelectorAll('.over').forEach(x => x.classList.remove('over'));
-  e.target.closest('.it')?.classList.add('over');
+  L.querySelectorAll('.bxa-over').forEach(x => x.classList.remove('bxa-over'));
+  e.target.closest('.bxa-it')?.classList.add('bxa-over');
 });
 
 L.addEventListener('drop', e => {
   e.preventDefault();
-  const r = e.target.closest('.it');
+  const r = e.target.closest('.bxa-it');
   if (r && drag !== null) {
     move(drag, +r.dataset.i);
   }
@@ -331,23 +331,23 @@ L.addEventListener('drop', e => {
 });
 
 L.addEventListener('dragend', () => {
-  L.querySelectorAll('.over').forEach(x => x.classList.remove('over'));
+  L.querySelectorAll('.bxa-over').forEach(x => x.classList.remove('bxa-over'));
 });
 
 L.addEventListener('keydown', e => {
-  const h = e.target.closest('.hd');
+  const h = e.target.closest('.bxa-hd');
   if (!h || !['ArrowUp', 'ArrowDown'].includes(e.key)) {
     return;
   }
 
   e.preventDefault();
-  const i = +h.closest('.it').dataset.i;
+  const i = +h.closest('.bxa-it').dataset.i;
   const n = e.key === 'ArrowUp' ? i - 1 : i + 1;
   move(i, n);
-  L.querySelector(`.it[data-i="${n}"] .hd`)?.focus();
+  L.querySelector(`.bxa-it[data-i="${n}"] .bxa-hd`)?.focus();
 });
 
-$('#add').onclick = () => {
+$('#bxa-add').onclick = () => {
   st.items.push({
     active: true,
     link: '',
@@ -360,11 +360,11 @@ $('#add').onclick = () => {
   });
   list();
   render();
-  L.querySelector('.it:last-child [data-f=text]').focus();
+  L.querySelector('.bxa-it:last-child [data-f=text]').focus();
 };
 
-$('#save').onclick = () => {
-  const t = $('#toast');
+$('#bxa-save').onclick = () => {
+  const t = $('#bxa-toast');
   t.classList.add('on');
   setTimeout(() => t.classList.remove('on'), 1800);
 };
