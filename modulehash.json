@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "scopes": {
+        "shop-root": {
+            "hashes": {
+                "/admin/bx_modified_ticker.php": "986d214d98e5a909a0e3bc78b45f5f61",
+                "/admin/bx_modified_ticker_draft.php": "0fa04f45db69e64a210abeb449c5ee98",
+                "/admin/images/icons/heading/bx_modified_ticker.png": "9893f0c7feaa9644f7368b106ce04b08",
+                "/admin/includes/extra/css/bx_modified_ticker.php": "03e58fddd96adba9f721c459f8ff8cfb",
+                "/admin/includes/extra/filenames/bx_modified_ticker.php": "5aabcca8d58c630904509ef4b4faa0bb",
+                "/admin/includes/extra/functions/bx_modified_ticker.php": "acf5f456b1d0845083dc4558bc5d1280",
+                "/admin/includes/extra/javascript/bx_modified_ticker.php": "1c23498b8158df19622acc69c5fdcca8",
+                "/admin/includes/extra/menu/bx_modified_ticker.php": "fba1f8a2d9be2ffd3db3b9c1e3ce7e16",
+                "/admin/includes/modules/system/bx_modified_ticker.php": "5e861116421dab6f898a0e0980b2b22a",
+                "/lang/english/extra/admin/bx_modified_ticker.php": "ad3718e5916e51d0e4c38ed2c3035c42",
+                "/lang/english/modules/system/bx_modified_ticker.php": "7edab10d0d3f24ae4c9eb5661b10312a",
+                "/lang/german/extra/admin/bx_modified_ticker.php": "41875474cc150c41536d2f307f7dc126",
+                "/lang/german/modules/system/bx_modified_ticker.php": "92880876fbbe99d028f60d6d5d45831c"
+            }
+        },
+        "shop-vendor-mmlc": {
+            "hashes": []
+        }
+    }
+}
