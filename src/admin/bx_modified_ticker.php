@@ -119,6 +119,21 @@ $messageStack->output();
                   </button><button data-v="bottom"><?php echo MODULE_BX_MODIFIED_TICKER_BOTTOM; ?></button>
                 </div>
 
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_FONT; ?></h3>
+                <div class="bxa-seg" data-seg="font">
+                  <button data-v="inherit"><?php echo MODULE_BX_MODIFIED_TICKER_FONT_SHOP; ?></button>
+                  <button data-v="system"><?php echo MODULE_BX_MODIFIED_TICKER_FONT_SANS; ?></button>
+                  <button data-v="serif"><?php echo MODULE_BX_MODIFIED_TICKER_FONT_SERIF; ?></button>
+                  <button data-v="mono"><?php echo MODULE_BX_MODIFIED_TICKER_FONT_MONO; ?></button>
+                </div>
+
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_WEIGHT; ?></h3>
+                <div class="bxa-seg" data-seg="weight">
+                  <button data-v="400"><?php echo MODULE_BX_MODIFIED_TICKER_WEIGHT_NORMAL; ?></button>
+                  <button data-v="600"><?php echo MODULE_BX_MODIFIED_TICKER_WEIGHT_SEMIBOLD; ?></button>
+                  <button data-v="700"><?php echo MODULE_BX_MODIFIED_TICKER_WEIGHT_BOLD; ?></button>
+                </div>
+
                 <h3><?php echo MODULE_BX_MODIFIED_TICKER_COLORS; ?></h3>
                 <div id="bxa-colors"></div>
 

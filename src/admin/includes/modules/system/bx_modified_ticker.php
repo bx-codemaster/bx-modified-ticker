@@ -37,6 +37,8 @@ class bx_modified_ticker {
     'BX_TICKER_FONT_SIZE'    => array('15',      ''),
     'BX_TICKER_PADDING'      => array('0.8',     ''),
     'BX_TICKER_FADE'         => array('4',       ''),
+    'BX_TICKER_FONT_FAMILY'  => array('inherit', "xtc_cfg_select_option(array('inherit', 'system', 'serif', 'mono'), "),
+    'BX_TICKER_FONT_WEIGHT'  => array('400',     "xtc_cfg_select_option(array('400', '600', '700'), "),
     'BX_TICKER_PAUSE_HOVER'  => array('True',    "xtc_cfg_select_option(array('True', 'False'), "),
     'BX_TICKER_DIRECTION'    => array('left',    "xtc_cfg_select_option(array('left', 'right'), "),
     'BX_TICKER_POSITION'     => array('top',     "xtc_cfg_select_option(array('top', 'bottom'), "),

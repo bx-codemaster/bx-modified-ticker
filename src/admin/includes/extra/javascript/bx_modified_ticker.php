@@ -65,6 +65,8 @@ const tickerSettings = {
   pause: true,
   dir: 'left',
   pos: 'top',
+  font: 'inherit',
+  weight: '400',
   bg: '#ffffff',
   ink: '#14181f',
   accent: '#e5322d',
@@ -121,6 +123,14 @@ const colorDefinitions = [
   ['accent', I18n.bx_txt_accent],
   ['line', I18n.bx_txt_line]
 ];
+
+// Feste, sichere Font-Stacks statt freier Eingabe oder externer Webfonts
+const fontStacks = {
+  inherit: 'inherit',
+  system: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+  serif: 'Georgia, "Times New Roman", serif',
+  mono: 'ui-monospace, "SF Mono", Consolas, monospace'
+};
 
 const querySelector = selector => document.querySelector(selector);
 const tickerElement = querySelector('#bxa-tk');
@@ -188,6 +198,8 @@ function applyTickerStyles() {
   tickerStyle.setProperty('--bx-size', tickerSettings.size + 'px');
   tickerStyle.setProperty('--bx-pad', tickerSettings.pad + 'rem');
   tickerStyle.setProperty('--bx-fade', tickerSettings.fade + 'rem');
+  tickerStyle.setProperty('--bx-font', fontStacks[tickerSettings.font] || fontStacks.inherit);
+  tickerStyle.setProperty('--bx-weight', tickerSettings.weight);
 
   tickerElement.classList.toggle('rev', tickerSettings.dir === 'right');
   tickerElement.classList.toggle('pause', tickerSettings.pause);
@@ -229,6 +241,8 @@ function updateJsonPreview() {
     BX_TICKER_FONT_SIZE: tickerSettings.size,
     BX_TICKER_PADDING: tickerSettings.pad,
     BX_TICKER_FADE: tickerSettings.fade,
+    BX_TICKER_FONT_FAMILY: tickerSettings.font,
+    BX_TICKER_FONT_WEIGHT: tickerSettings.weight,
     BX_TICKER_PAUSE_HOVER: tickerSettings.pause ? 'True' : 'False',
     BX_TICKER_DIRECTION: tickerSettings.dir,
     BX_TICKER_POSITION: tickerSettings.pos,

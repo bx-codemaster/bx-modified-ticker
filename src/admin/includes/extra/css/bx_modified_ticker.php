@@ -87,32 +87,29 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   gap: .5rem;
 }
 
-.bxa .bxa-tools .bxa-seg {
-  border-radius: 4px;
-}
-
-.bxa .bxa-tools .bxa-seg button {
-  padding: .2rem .6rem;
-  font-size: .85em;
-}
-
-/* Erster Button (links oben & unten) */
-#bxa-langs button:first-child,
-.bxa-seg button:first-child {
-  border-radius: 4px 0 0 4px;
-}
-
-/* Letzter Button (rechts oben & unten) */
-#bxa-langs button:last-child,
-.bxa-seg button:last-child {
-  border-radius: 0 4px 4px 0;
-}
-
 .bxa .bxa-tools .bxa-btn {
   padding: .25rem .75rem;
   margin: 0;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: .85em;
+}
+
+.bxa .bxa-tools .bxa-seg button {
+  padding: .2rem .75rem;
+  font-size: .85em;
+}
+/* Erster Button (links oben & unten) */
+.bxa .bxa-seg button:first-child {
+  border-radius: 4px 0 0 4px;
+  -webkit-border-radius: 4px 0 0 4px;
+  -moz-border-radius: 4px 0 0 4px;
+}
+
+/* Letzter Button (rechts oben & unten) */
+.bxa .bxa-seg button:last-child {
+  border-radius: 0 4px 4px 0;
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
 }
 
 .bxa .bxa-seg {
@@ -120,13 +117,21 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   border: 1px solid var(--bxa-line);
   overflow: hidden;
   border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
 }
 
 .bxa .bxa-seg button {
+  appearance: none;
+  -webkit-appearance: none;
   border: 0;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
   background: none;
   padding: .4rem .8rem;
   margin: 0;
+  font-size: .85em;
   cursor: pointer;
   transition: background-color .15s, color .15s;
 }
@@ -147,8 +152,12 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 }
 
 .bxa .bxa-btn {
+  appearance: none;
+  -webkit-appearance: none;
   border: 0;
-  border-radius: 8px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
   padding: .5rem 1rem;
   background: var(--bxa-acc-secondary);
   color: var(--bxa-accInk);
@@ -177,7 +186,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   border-color: var(--bxa-acc);
 }
 
-.bxa :focus-visible {
+.bxa .bxa-btn:focus-visible {
   outline: 2px solid var(--bxa-acc);
   outline-offset: 2px;
 }
@@ -227,6 +236,8 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   color: var(--bx-ink);
   border-block: 1px solid var(--bx-line);
   font-size: var(--bx-size);
+  font-family: var(--bx-font, inherit);
+  font-weight: var(--bx-weight, 400);
 }
 
 .bx-ticker-label {
@@ -352,7 +363,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   font-weight: 600;
 }
 
-.bxa .bxa-radiusow {
+.bxa .bxa-row {
   display: grid;
   grid-template-columns: 6.5rem 1fr 4.6rem;
   align-items: center;
@@ -360,13 +371,13 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   margin: .55rem 0;
 }
 
-.bxa .bxa-radiusow output {
+.bxa .bxa-row output {
   text-align: right;
   color: var(--bxa-mut);
   font-variant-numeric: tabular-nums;
 }
 
-.bxa .bxa-radiusow.bxa-plain {
+.bxa .bxa-row.bxa-plain {
   grid-template-columns: 1fr auto;
 }
 
