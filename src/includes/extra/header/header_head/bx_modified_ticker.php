@@ -164,38 +164,48 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
 </style>
 <script>
 (function () {
-  var ticker = document.getElementById('bx-ticker');
-  if (!ticker) {
-    return;
-  }
-  var group = ticker.querySelector('.bx-ticker-group');
-  var speed = <?php echo (float) (defined('BX_TICKER_SPEED') ? BX_TICKER_SPEED : 60); ?>; // px/s
-  var gapRem = <?php echo (float) (defined('BX_TICKER_GAP') ? BX_TICKER_GAP : 3); ?>;
-
-  function applyDuration() {
-    if (!group) {
+  function initTicker() {
+    var ticker = document.getElementById('bx-ticker');
+    if (!ticker) {
       return;
     }
-    var gapPx = gapRem * parseFloat(getComputedStyle(document.documentElement).fontSize);
-    var distance = group.offsetWidth + gapPx;
-    var duration = Math.max(4, distance / speed);
-    ticker.style.setProperty('--bx-dur', duration.toFixed(1) + 's');
-  }
+    var group = ticker.querySelector('.bx-ticker-group');
+    var speed = <?php echo (float) (defined('BX_TICKER_SPEED') ? BX_TICKER_SPEED : 60); ?>; // px/s
+    var gapRem = <?php echo (float) (defined('BX_TICKER_GAP') ? BX_TICKER_GAP : 3); ?>;
 
-  function applySpacerHeight() {
-    var spacer = document.getElementById('bx-ticker-spacer');
-    if (spacer) {
-      spacer.style.height = ticker.offsetHeight + 'px';
+    function applyDuration() {
+      if (!group) {
+        return;
+      }
+      var gapPx = gapRem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      var distance = group.offsetWidth + gapPx;
+      var duration = Math.max(4, distance / speed);
+      ticker.style.setProperty('--bx-dur', duration.toFixed(1) + 's');
+    }
+
+    function applySpacerHeight() {
+      var spacer = document.getElementById('bx-ticker-spacer');
+      if (spacer) {
+        document.body.appendChild(spacer);
+        spacer.style.height = ticker.offsetHeight + 'px';
+      }
+    }
+
+    applyDuration();
+    applySpacerHeight();
+    window.addEventListener('resize', applyDuration);
+    window.addEventListener('resize', applySpacerHeight);
+    window.addEventListener('load', applySpacerHeight);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(applyDuration);
+      document.fonts.ready.then(applySpacerHeight);
     }
   }
 
-  applyDuration();
-  applySpacerHeight();
-  window.addEventListener('resize', applyDuration);
-  window.addEventListener('resize', applySpacerHeight);
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(applyDuration);
-    document.fonts.ready.then(applySpacerHeight);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTicker);
+  } else {
+    initTicker();
   }
 })();
 </script>

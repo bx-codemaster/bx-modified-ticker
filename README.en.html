@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BX Modified Ticker</title>
+</head>
+<body>
+
+<h1>BX Modified Ticker</h1>
+
+<p>Configurable, multilingual news ticker for <strong>modified eCommerce</strong>. Displays current messages (e.g. shipping notices, promotions, service notices) as an endlessly scrolling ticker bar in the storefront – fully managed through the admin interface, no template changes required.</p>
+
+<h2>Features</h2>
+
+<h3>Message management</h3>
+<ul>
+  <li>Any number of ticker messages, sortable via drag &amp; drop or arrow keys.</li>
+  <li>Each message can be enabled/disabled individually.</li>
+  <li>Multilingual text per message – if a translation is missing, the shop's default language is used as a fallback automatically.</li>
+  <li>Optional link per message (only relative paths or <code>http(s)://</code> are accepted).</li>
+  <li>Scheduled display via "from"/"to" dates (e.g. for time-limited promotions).</li>
+  <li>Freely editable label on the left of the ticker (e.g. "Current"/"Live"), also multilingual.</li>
+</ul>
+
+<h3>Presentation &amp; behavior</h3>
+<ul>
+  <li>Speed, gap, font size, padding and edge fade are freely configurable.</li>
+  <li>Scroll direction (left/right) and position (in the normal document flow at the top, or fixed at the bottom of the screen).</li>
+  <li>Font (shop font, system sans, serif, monospace) and font weight (normal/semibold/bold).</li>
+  <li>Colors for background, text, accent (live dot) and dividing lines via color picker.</li>
+  <li>Pause on hover/keyboard focus can be toggled.</li>
+  <li>Automatically respects <code>prefers-reduced-motion</code> (cannot be disabled) – the animation is turned off for affected users.</li>
+  <li>The ticker duration is calculated automatically in the frontend based on the actual text width, so the speed stays constant regardless of the amount of text.</li>
+  <li>No empty ticker bar is shown if there are no active/valid messages.</li>
+</ul>
+
+<h3>Output type: Standard or Smarty</h3>
+<ul>
+  <li><strong>Standard</strong>: the ticker markup is output automatically in the frontend (at the top of the HTML flow or fixed at the bottom).</li>
+  <li><strong>Smarty</strong>: no automatic output – instead only the global Smarty template variable <code>{$bx_modified_ticker}</code> is populated, which can be placed freely in your own template. The position setting (top/bottom) has no effect in this mode, since placement is entirely up to the template.</li>
+</ul>
+
+<h3>Admin interface</h3>
+<ul>
+  <li>A single, cohesive configuration panel with live preview (changes take effect immediately in the preview ticker).</li>
+  <li>Language switcher for all managed texts (label, messages) directly in the panel.</li>
+  <li>JSON preview of the values as they would be stored (collapsible box for developers/support).</li>
+  <li>Saving runs asynchronously via AJAX, including success/error feedback.</li>
+</ul>
+
+<h3>Security &amp; robustness</h3>
+<ul>
+  <li>CSRF protection via the shop's global mechanism (<code>CSRFName</code>/<code>CSRFToken</code>).</li>
+  <li>Server-side validation of all inputs: numeric values are clamped to sensible ranges, colors are checked for valid hex values, choice fields (direction, position, type, font, font weight) are validated against whitelists.</li>
+  <li>Links are restricted to relative paths or <code>http(s)://</code> (no <code>javascript:</code>/<code>data:</code> etc.).</li>
+  <li>Free text is stripped of HTML/tags and length-limited.</li>
+  <li>Saving is performed within a database transaction (rollback on errors).</li>
+  <li>Frontend output is consistently HTML-escaped.</li>
+</ul>
+
+<h2>Configuration (Tools &rarr; BX Modified Ticker)</h2>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>Values</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Status</td><td>On/Off</td><td>Show ticker in the shop</td></tr>
+    <tr><td>Speed</td><td>20–240 px/s</td><td>Scroll speed</td></tr>
+    <tr><td>Gap</td><td>1–8 rem</td><td>Spacing between messages</td></tr>
+    <tr><td>Font size</td><td>12–24 px</td><td>Size of the ticker text</td></tr>
+    <tr><td>Height (padding)</td><td>0.4–1.6 rem</td><td>Vertical padding</td></tr>
+    <tr><td>Edge fade</td><td>0–8 rem</td><td>Soft fade at the edges</td></tr>
+    <tr><td>Pause on hover</td><td>On/Off</td><td>Ticker pauses on mouse/keyboard focus</td></tr>
+    <tr><td>Direction</td><td>left/right</td><td>Scroll direction</td></tr>
+    <tr><td>Position</td><td>top/bottom</td><td>Placed in the document flow or fixed at the bottom of the screen (only applies with type "Standard")</td></tr>
+    <tr><td>Type</td><td>standard/smarty</td><td>Automatic output or provided as Smarty variable <code>{$bx_modified_ticker}</code></td></tr>
+    <tr><td>Font</td><td>inherit/system/serif/mono</td><td>Fixed, safe font stacks</td></tr>
+    <tr><td>Font weight</td><td>400/600/700</td><td>Normal, semibold, bold</td></tr>
+    <tr><td>Colors</td><td>Hex</td><td>Background, text, accent, line</td></tr>
+  </tbody>
+</table>
+
+<h2>Database</h2>
+
+<p>The module creates the following tables on installation:</p>
+<ul>
+  <li><code>bx_ticker_items</code> – messages (sort order, status, link, validity period)</li>
+  <li><code>bx_ticker_items_description</code> – multilingual text per message</li>
+  <li><code>bx_ticker_label</code> – multilingual ticker label</li>
+</ul>
+<p>as well as the configuration values in a dedicated group under <em>Configuration</em>.</p>
+
+<h2>Requirements</h2>
+<ul>
+  <li>PHP ^7.4 or ^8.0</li>
+  <li>modified eCommerce 3.1.0 – 3.3.0</li>
+</ul>
+
+</body>
+</html>
