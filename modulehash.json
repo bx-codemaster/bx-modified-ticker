@@ -3,20 +3,20 @@
     "scopes": {
         "shop-root": {
             "hashes": {
-                "/admin/bx_modified_ticker.php": "3c9b9e3f16d21b25b7698441a6d89867",
+                "/admin/bx_modified_ticker.php": "a89138a1f23f303d0b9630c18d165b69",
                 "/admin/images/icons/heading/bx_modified_ticker.png": "9893f0c7feaa9644f7368b106ce04b08",
-                "/admin/includes/extra/css/bx_modified_ticker.php": "b0ad9859f3619ce22b47b4df3823bb60",
+                "/admin/includes/extra/css/bx_modified_ticker.php": "43d10fdf6be9ded9bd2b47667abacee2",
                 "/admin/includes/extra/filenames/bx_modified_ticker.php": "5aabcca8d58c630904509ef4b4faa0bb",
                 "/admin/includes/extra/functions/bx_modified_ticker.php": "acf5f456b1d0845083dc4558bc5d1280",
-                "/admin/includes/extra/javascript/bx_modified_ticker.php": "c35297521454d12448399c3b8469b142",
+                "/admin/includes/extra/javascript/bx_modified_ticker.php": "ddf792701749cd6c6d7fe6a45ee0c527",
                 "/admin/includes/extra/menu/bx_modified_ticker.php": "fba1f8a2d9be2ffd3db3b9c1e3ce7e16",
-                "/admin/includes/modules/system/bx_modified_ticker.php": "1429ff20a0c0dcdb4ded8a512bd6d499",
-                "/includes/extra/header/header_body/bx_modified_ticker.php": "75aa0a8df75db9bb2a2debb1b3071e95",
-                "/includes/extra/header/header_head/bx_modified_ticker.php": "e6d32b3a4c97a98b5a36cffaae863edc",
-                "/lang/english/extra/admin/bx_modified_ticker.php": "68497fa4f00eee82667c68189303dc82",
-                "/lang/english/modules/system/bx_modified_ticker.php": "61c96f327de6a07194b5e212e2c2388d",
-                "/lang/german/extra/admin/bx_modified_ticker.php": "5f94f5122fb00e8e82281ea9d2eaaa44",
-                "/lang/german/modules/system/bx_modified_ticker.php": "67d514422fc742d1dc34c5cdd2db856a"
+                "/admin/includes/modules/system/bx_modified_ticker.php": "792ad18c724fffa82e53dea3259b5277",
+                "/includes/extra/header/header_body/bx_modified_ticker.php": "ccbec2965c1efaee4fe4ac5b07c601be",
+                "/includes/extra/header/header_head/bx_modified_ticker.php": "9358127a8f17c298e07544e3d7563f42",
+                "/lang/english/extra/admin/bx_modified_ticker.php": "5bea319138a161130d2d744eb018248b",
+                "/lang/english/modules/system/bx_modified_ticker.php": "7a60976df7c87fb937625a697cc632e7",
+                "/lang/german/extra/admin/bx_modified_ticker.php": "68fa09977cdb4a95dc06540f7fe2b212",
+                "/lang/german/modules/system/bx_modified_ticker.php": "1d3cae7907cd215dc8c18a88296592fc"
             }
         },
         "shop-vendor-mmlc": {

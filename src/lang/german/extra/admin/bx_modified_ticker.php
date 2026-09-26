@@ -16,9 +16,14 @@ define('MODULE_BX_MODIFIED_TICKER_HOVER', 'Pause bei Hover');
 define('MODULE_BX_MODIFIED_TICKER_DIR', 'Richtung');
 define('MODULE_BX_MODIFIED_TICKER_LEFT', 'Nach links');
 define('MODULE_BX_MODIFIED_TICKER_RIGHT', 'Nach rechts');
+define('MODULE_BX_MODIFIED_TICKER_TYPE', 'Typ');
+define('MODULE_BX_MODIFIED_TICKER_STANDARD', 'Standard');
+define('MODULE_BX_MODIFIED_TICKER_SMARTY', 'Smarty');
+define('MODULE_BX_MODIFIED_TICKER_SMARTY_HINT', 'Wenn der Typ "Smarty" gewählt ist, erfolgt keine automatische Ausgabe, stattdessen wird nur die Smarty-Template-Variable {$bx_modified_ticker} global befüllt.');
 define('MODULE_BX_MODIFIED_TICKER_POS', 'Position');
 define('MODULE_BX_MODIFIED_TICKER_TOP', 'Oben');
 define('MODULE_BX_MODIFIED_TICKER_BOTTOM', 'Unten');
+define('MODULE_BX_MODIFIED_TICKER_POS_HINT', 'Nur wirksam wenn Typ "Standard" gewählt ist.');
 define('MODULE_BX_MODIFIED_TICKER_FONT', 'Schriftart');
 define('MODULE_BX_MODIFIED_TICKER_FONT_SHOP', 'Shop-Schrift');
 define('MODULE_BX_MODIFIED_TICKER_FONT_SANS', 'System-Sans');
@@ -34,7 +39,7 @@ define('MODULE_BX_MODIFIED_TICKER_HINT', 'Reduzierte Bewegung wird immer respekt
 define('MODULE_BX_MODIFIED_TICKER_MESSAGE', 'Meldungen');
 define('MODULE_BX_MODIFIED_TICKER_ADD_MESSAGE', '+ Meldung hinzufügen');
 define('MODULE_BX_MODIFIED_TICKER_HINT_ORDER', 'Reihenfolge per Ziehen am Griff oder mit Pfeiltasten. Fehlt ein Text in der gewählten Sprache, wird der deutsche verwendet.');
-define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Werte, wie das Modul sie speichern würde');
+define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Werte, wie das Modul sie speichert.');
 
 define('MODULE_BX_MODIFIED_TICKER_SPEED', 'Geschwindigkeit');
 define('MODULE_BX_MODIFIED_TICKER_GAP', 'Abstand');

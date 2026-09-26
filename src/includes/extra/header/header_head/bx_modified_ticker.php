@@ -21,14 +21,15 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
     'serif'   => 'Georgia, "Times New Roman", serif',
     'mono'    => 'ui-monospace, "SF Mono", Consolas, monospace',
   );
-  $bx_font_key = defined('BX_TICKER_FONT_FAMILY') ? BX_TICKER_FONT_FAMILY : 'inherit';
+  $bx_font_key    = defined('BX_TICKER_FONT_FAMILY') ? BX_TICKER_FONT_FAMILY : 'inherit';
   $bx_font_family = $bx_font_stacks[$bx_font_key] ?? $bx_font_stacks['inherit'];
 ?>
 <style>
 :root {
   --bx-bg: <?php echo (defined('BX_TICKER_COLOR_BG') ? BX_TICKER_COLOR_BG : '#ffffff'); ?>;
   --bx-ink: <?php echo (defined('BX_TICKER_COLOR_TEXT') ? BX_TICKER_COLOR_TEXT : '#14181f'); ?>;
-  --bx-accent: <?php echo (defined('BX_TICKER_COLOR_ACCENT') ? BX_TICKER_COLOR_ACCENT : '#e5322d'); ?>;
+  --bx-accent: <?php echo (defined('BX_TICKER_COLOR_ACCENT') ? BX_TICKER_COLOR_ACCENT : '#af417e'); ?>;
+  --bx-accent-secondary: <?php echo (defined('BX_TICKER_COLOR_ACCENT_SECONDARY') ? BX_TICKER_COLOR_ACCENT_SECONDARY : '#21e773'); ?>;
   --bx-line: <?php echo (defined('BX_TICKER_COLOR_LINE') ? BX_TICKER_COLOR_LINE : '#dfe4ea'); ?>;
   --bx-gap: <?php echo (defined('BX_TICKER_GAP') ? BX_TICKER_GAP : 3); ?>rem;
   --bx-size: <?php echo (defined('BX_TICKER_FONT_SIZE') ? BX_TICKER_FONT_SIZE : 15); ?>px;
@@ -48,6 +49,17 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
   font-size: var(--bx-size);
   font-family: var(--bx-font, inherit);
   font-weight: var(--bx-weight, 400);
+}
+
+.bx-ticker a,
+.bx-ticker a:hover,
+.bx-ticker a:link {
+  font-size: var(--bx-size);
+  font-family: var(--bx-font, inherit);
+  font-weight: var(--bx-weight, 400);
+}
+.bx-ticker a:hover {
+  color: var(--bx-accent-secondary) !important;
 }
 
 .bx-ticker-label {

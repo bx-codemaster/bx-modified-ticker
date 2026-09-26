@@ -6,6 +6,10 @@
  * mit Rückfall auf die Shop-Standardsprache, falls in der aktuellen Sprache
  * kein Text gepflegt ist. Läuft auf jeder Frontend-Seite (header_body).
  *
+ * BX_TICKER_TYPE 'standard' gibt das Markup automatisch hier aus. Bei 'smarty'
+ * erfolgt keine automatische Ausgabe, stattdessen wird nur die Smarty-Template-
+ * Variable {$bx_ticker} global befüllt, die der User selbst im Template einbaut.
+ *
  * @package    BX Modified Ticker
  * @subpackage Frontend Ausgabe
  * @version    1.0.0
@@ -80,7 +84,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
   if (!empty($bx_ticker_items)) {
     $bx_ticker_reverse  = (defined('BX_TICKER_DIRECTION') && BX_TICKER_DIRECTION === 'right');
     $bx_ticker_pause    = !(defined('BX_TICKER_PAUSE_HOVER') && BX_TICKER_PAUSE_HOVER === 'False');
-    $bx_ticker_bottom   = (defined('BX_TICKER_POSITION') && BX_TICKER_POSITION === 'bottom');
+    $bx_ticker_bottom   = ( (defined('BX_TICKER_POSITION') && BX_TICKER_POSITION === 'bottom') && (defined('BX_TICKER_TYPE') && BX_TICKER_TYPE === 'standard') );
     $bx_ticker_classes  = 'bx-ticker' . ($bx_ticker_reverse ? ' rev' : '') . ($bx_ticker_pause ? ' pause' : '') . ($bx_ticker_bottom ? ' bx-ticker-fixed-bottom' : '');
 
     $bx_render_group = function ($bx_hidden = false) use ($bx_ticker_items) {
@@ -95,6 +99,12 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
       }
       echo '</ul>';
     };
+
+    // Bei Typ "smarty" wird nur die Template-Variable {$bx_ticker} befüllt, keine automatische Ausgabe.
+    $bx_ticker_smarty_mode = defined('BX_TICKER_TYPE') && BX_TICKER_TYPE === 'smarty';
+    if ($bx_ticker_smarty_mode) {
+      ob_start();
+    }
 ?>
 <div class="<?php echo $bx_ticker_classes; ?>" id="bx-ticker">
   <div class="bx-ticker-label"><?php echo htmlspecialchars($bx_ticker_label, ENT_QUOTES, 'UTF-8'); ?></div>
@@ -107,6 +117,10 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
 <?php if ($bx_ticker_bottom) { ?>
 <div id="bx-ticker-spacer" aria-hidden="true"></div>
 <?php
-    } 
+    }
+
+    if ($bx_ticker_smarty_mode) {
+      (new Smarty())->assignGlobal('bx_modified_ticker', ob_get_clean());
+    }
   }
 }
