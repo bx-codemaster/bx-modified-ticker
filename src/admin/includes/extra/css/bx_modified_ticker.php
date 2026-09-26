@@ -304,6 +304,18 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   text-decoration: none;
 }
 
+.bx-ticker a,
+.bx-ticker a:hover,
+.bx-ticker a:link {
+  font-size: var(--bx-size);
+  font-family: var(--bx-font, inherit);
+  font-weight: var(--bx-weight, 400);
+}
+
+.bx-ticker a:hover {
+  color: var(--bx-accent);
+}
+
 @keyframes bx-ticker-scroll {
   to {
     transform: translateX(calc(-100% - var(--bx-gap)));

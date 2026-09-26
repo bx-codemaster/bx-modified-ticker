@@ -33,6 +33,8 @@ define('BX_TICKER_DIRECTION_TITLE', 'Direction');
 define('BX_TICKER_DIRECTION_DESC', 'left or right.');
 define('BX_TICKER_POSITION_TITLE', 'Position');
 define('BX_TICKER_POSITION_DESC', 'top or bottom.');
+define('BX_TICKER_TYPE_TITLE', 'Type');
+define('BX_TICKER_TYPE_DESC', 'standard (rendered automatically) or smarty (only assigns the {$bx_ticker} template variable, no automatic output).');
 define('BX_TICKER_FONT_FAMILY_TITLE', 'Font family');
 define('BX_TICKER_FONT_FAMILY_DESC', 'inherit (shop font), system, serif or mono.');
 define('BX_TICKER_FONT_WEIGHT_TITLE', 'Font weight');

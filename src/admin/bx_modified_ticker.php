@@ -117,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['bx_ticker_action'] ?? '') 
     'BX_TICKER_PAUSE_HOVER'  => (($configuration_input['BX_TICKER_PAUSE_HOVER'] ?? '') === 'True') ? 'True' : 'False',
     'BX_TICKER_DIRECTION'    => bx_ticker_choice($configuration_input['BX_TICKER_DIRECTION'] ?? null, array('left', 'right'), 'left'),
     'BX_TICKER_POSITION'     => bx_ticker_choice($configuration_input['BX_TICKER_POSITION'] ?? null, array('top', 'bottom'), 'top'),
+    'BX_TICKER_TYPE'         => bx_ticker_choice($configuration_input['BX_TICKER_TYPE'] ?? null, array('standard', 'smarty'), 'standard'),
     'BX_TICKER_COLOR_BG'     => bx_ticker_hex_color($configuration_input['BX_TICKER_COLOR_BG'] ?? null, '#ffffff'),
     'BX_TICKER_COLOR_TEXT'   => bx_ticker_hex_color($configuration_input['BX_TICKER_COLOR_TEXT'] ?? null, '#14181f'),
     'BX_TICKER_COLOR_ACCENT' => bx_ticker_hex_color($configuration_input['BX_TICKER_COLOR_ACCENT'] ?? null, '#e5322d'),
@@ -213,6 +214,7 @@ $bx_settings = array(
   'pause'  => (defined('BX_TICKER_PAUSE_HOVER') ? BX_TICKER_PAUSE_HOVER : 'True') === 'True',
   'dir'    => defined('BX_TICKER_DIRECTION') ? BX_TICKER_DIRECTION : 'left',
   'pos'    => defined('BX_TICKER_POSITION') ? BX_TICKER_POSITION : 'top',
+  'type'   => defined('BX_TICKER_TYPE') ? BX_TICKER_TYPE : 'standard',
   'font'   => defined('BX_TICKER_FONT_FAMILY') ? BX_TICKER_FONT_FAMILY : 'inherit',
   'weight' => defined('BX_TICKER_FONT_WEIGHT') ? BX_TICKER_FONT_WEIGHT : '400',
   'bg'     => defined('BX_TICKER_COLOR_BG') ? BX_TICKER_COLOR_BG : '#ffffff',
@@ -338,18 +340,20 @@ $messageStack->output();
                   <span><?php echo MODULE_BX_MODIFIED_TICKER_HOVER; ?></span>
                   <input class="bxa-sw" type="checkbox" data-k="pause">
                 </div>
-
-                <h3><?php echo MODULE_BX_MODIFIED_TICKER_DIR; ?></h3>
-                <div class="bxa-seg" data-seg="dir">
-                  <button data-v="left"><?php echo MODULE_BX_MODIFIED_TICKER_LEFT; ?></button>
-                  <button data-v="right"><?php echo MODULE_BX_MODIFIED_TICKER_RIGHT; ?></button>
+                
+                <h3><?php echo MODULE_BX_MODIFIED_TICKER_TYPE; ?></h3>
+                <div class="bxa-seg" data-seg="type">
+                  <button data-v="standard"><?php echo MODULE_BX_MODIFIED_TICKER_STANDARD; ?></button>
+                  <button data-v="smarty"><?php echo MODULE_BX_MODIFIED_TICKER_SMARTY; ?></button>
                 </div>
+                <p style="margin-top: 0;"><small><?php echo MODULE_BX_MODIFIED_TICKER_SMARTY_HINT; ?></small></p>
 
                 <h3><?php echo MODULE_BX_MODIFIED_TICKER_POS; ?></h3>
                 <div class="bxa-seg" data-seg="pos">
-                  <button data-v="top"><?php echo MODULE_BX_MODIFIED_TICKER_TOP; ?>
-                  </button><button data-v="bottom"><?php echo MODULE_BX_MODIFIED_TICKER_BOTTOM; ?></button>
+                  <button data-v="top"><?php echo MODULE_BX_MODIFIED_TICKER_TOP; ?></button>
+                  <button data-v="bottom"><?php echo MODULE_BX_MODIFIED_TICKER_BOTTOM; ?></button>
                 </div>
+                <p style="margin-top: 0;"><small><?php echo MODULE_BX_MODIFIED_TICKER_POS_HINT; ?></small></p>
 
                 <h3><?php echo MODULE_BX_MODIFIED_TICKER_FONT; ?></h3>
                 <div class="bxa-seg" data-seg="font">

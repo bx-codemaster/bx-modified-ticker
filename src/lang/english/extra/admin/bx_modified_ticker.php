@@ -16,9 +16,14 @@ define('MODULE_BX_MODIFIED_TICKER_HOVER', 'Pause on Hover');
 define('MODULE_BX_MODIFIED_TICKER_DIR', 'Direction');
 define('MODULE_BX_MODIFIED_TICKER_LEFT', 'Left');
 define('MODULE_BX_MODIFIED_TICKER_RIGHT', 'Right');
+define('MODULE_BX_MODIFIED_TICKER_TYPE', 'Type');
+define('MODULE_BX_MODIFIED_TICKER_STANDARD', 'Standard');
+define('MODULE_BX_MODIFIED_TICKER_SMARTY', 'Smarty');
+define('MODULE_BX_MODIFIED_TICKER_SMARTY_HINT', 'If the type "Smarty" is selected, no automatic output occurs, instead only the Smarty template variable {$bx_modified_ticker} is globally populated.');
 define('MODULE_BX_MODIFIED_TICKER_POS', 'Position');
 define('MODULE_BX_MODIFIED_TICKER_TOP', 'Top');
 define('MODULE_BX_MODIFIED_TICKER_BOTTOM', 'Bottom');
+define('MODULE_BX_MODIFIED_TICKER_POS_HINT', 'Only effective when the type "Standard" is selected.');
 define('MODULE_BX_MODIFIED_TICKER_FONT', 'Font');
 define('MODULE_BX_MODIFIED_TICKER_FONT_SHOP', 'Shop font');
 define('MODULE_BX_MODIFIED_TICKER_FONT_SANS', 'System sans');
@@ -34,7 +39,7 @@ define('MODULE_BX_MODIFIED_TICKER_HINT', 'Reduced motion is always respected and
 define('MODULE_BX_MODIFIED_TICKER_MESSAGE', 'Messages');
 define('MODULE_BX_MODIFIED_TICKER_ADD_MESSAGE', '+ Add Message');
 define('MODULE_BX_MODIFIED_TICKER_HINT_ORDER', 'Order by dragging the handle or using the arrow keys. If a text is missing in the selected language, the German one will be used.');
-define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Values as the module would store them');
+define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Values as the module actually stores them.');
 
 define('MODULE_BX_MODIFIED_TICKER_SPEED', 'Speed');
 define('MODULE_BX_MODIFIED_TICKER_GAP', 'Gap');

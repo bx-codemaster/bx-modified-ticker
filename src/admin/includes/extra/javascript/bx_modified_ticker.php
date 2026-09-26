@@ -207,6 +207,7 @@ function buildPayload() {
     BX_TICKER_PAUSE_HOVER: tickerSettings.pause ? 'True' : 'False',
     BX_TICKER_DIRECTION: tickerSettings.dir,
     BX_TICKER_POSITION: tickerSettings.pos,
+    BX_TICKER_TYPE: tickerSettings.type,
     BX_TICKER_COLOR_BG: tickerSettings.bg,
     BX_TICKER_COLOR_TEXT: tickerSettings.ink,
     BX_TICKER_COLOR_ACCENT: tickerSettings.accent,
