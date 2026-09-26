@@ -3,19 +3,18 @@
     "scopes": {
         "shop-root": {
             "hashes": {
-                "/admin/bx_modified_ticker.php": "0605cee0340798c42d4bc8c9272d7850",
-                "/admin/bx_modified_ticker_draft.php": "0fa04f45db69e64a210abeb449c5ee98",
+                "/admin/bx_modified_ticker.php": "3c9b9e3f16d21b25b7698441a6d89867",
                 "/admin/images/icons/heading/bx_modified_ticker.png": "9893f0c7feaa9644f7368b106ce04b08",
-                "/admin/includes/extra/css/bx_modified_ticker.php": "7aa93f92265961a75e734662ec05b864",
+                "/admin/includes/extra/css/bx_modified_ticker.php": "b0ad9859f3619ce22b47b4df3823bb60",
                 "/admin/includes/extra/filenames/bx_modified_ticker.php": "5aabcca8d58c630904509ef4b4faa0bb",
                 "/admin/includes/extra/functions/bx_modified_ticker.php": "acf5f456b1d0845083dc4558bc5d1280",
-                "/admin/includes/extra/javascript/bx_modified_ticker.php": "5df85c4421956984fd51fa3bc8b358d7",
+                "/admin/includes/extra/javascript/bx_modified_ticker.php": "c35297521454d12448399c3b8469b142",
                 "/admin/includes/extra/menu/bx_modified_ticker.php": "fba1f8a2d9be2ffd3db3b9c1e3ce7e16",
-                "/admin/includes/modules/system/bx_modified_ticker.php": "5e861116421dab6f898a0e0980b2b22a",
-                "/lang/english/extra/admin/bx_modified_ticker.php": "9422b044f805bf1b4e3a61cdce6eadcf",
-                "/lang/english/modules/system/bx_modified_ticker.php": "7edab10d0d3f24ae4c9eb5661b10312a",
-                "/lang/german/extra/admin/bx_modified_ticker.php": "69497664a495a11c03a6d2088f8b049f",
-                "/lang/german/modules/system/bx_modified_ticker.php": "92880876fbbe99d028f60d6d5d45831c"
+                "/admin/includes/modules/system/bx_modified_ticker.php": "1429ff20a0c0dcdb4ded8a512bd6d499",
+                "/lang/english/extra/admin/bx_modified_ticker.php": "68497fa4f00eee82667c68189303dc82",
+                "/lang/english/modules/system/bx_modified_ticker.php": "61c96f327de6a07194b5e212e2c2388d",
+                "/lang/german/extra/admin/bx_modified_ticker.php": "5f94f5122fb00e8e82281ea9d2eaaa44",
+                "/lang/german/modules/system/bx_modified_ticker.php": "67d514422fc742d1dc34c5cdd2db856a"
             }
         },
         "shop-vendor-mmlc": {

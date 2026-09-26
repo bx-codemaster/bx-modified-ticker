@@ -2,7 +2,20 @@
 defined( '_VALID_XTC' ) or die( 'Direct Access to this location is not allowed.' );
 
 define('MODULE_BX_MODIFIED_TICKER_TEXT_TITLE', 'BX Modified Ticker');
-define('MODULE_BX_MODIFIED_TICKER_TEXT_DESC', 'Konfigurierbare, mehrsprachige Laufschrift. Meldungen und Darstellung werden unter Ticker verwalten gepflegt.');
+
+define('MODULE_BX_MODIFIED_TICKER_TEXT_DESC','
+<details class="bxac-card">
+  <summary class="bxac-summary" style="list-style: none;">
+    <span class="bxac-arrow">▸</span>
+    ' . xtc_image(DIR_WS_ICONS.'heading/bx_modified_ticker.png', 'BX Modified Ticker') . '
+    <span class="bxac-title">BX Modified Ticker</span>
+  </summary>
+  <div class="bxac-body">
+    <h3 style="margin-top: 0;">Konfigurierbare, mehrsprachige Laufschrift.</h3>
+    <p>Ticker-Meldungen und Darstellung werden unter <i>Hilfsprogramme -> BX Modified Ticker</i> gepflegt.</p>
+  </div>
+</details>');
+
 define('MODULE_BX_MODIFIED_TICKER_BUTTON_MANAGE', 'Ticker verwalten');
 define('MODULE_BX_MODIFIED_TICKER_STATUS_TITLE', 'Status');
 define('MODULE_BX_MODIFIED_TICKER_STATUS_DESC', 'Ticker im Shop anzeigen');
