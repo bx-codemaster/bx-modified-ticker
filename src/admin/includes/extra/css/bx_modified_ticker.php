@@ -570,6 +570,10 @@ section > .bxa-row.bxa-plain {
 .bxa #bxa-toast.on {
   opacity: 1;
 }
+
+.bxa #bxa-toast.bxa-toast-error {
+  background: #b3261e;
+}
 </style>
 <?php
 }

@@ -6,6 +6,9 @@ define('MODULE_BX_MODIFIED_TICKER', 'BX Modified Ticker');
 define('MODULE_BX_MODIFIED_TICKER_SUBTITLE', 'Verwalten Sie Ihre Modified Ticker Einstellungen hier.');
 
 define('MODULE_BX_MODIFIED_TICKER_SAVE', 'Speichern');
+define('MODULE_BX_MODIFIED_TICKER_SAVING', 'Speichert …');
+define('MODULE_BX_MODIFIED_TICKER_SAVED', 'Gespeichert');
+define('MODULE_BX_MODIFIED_TICKER_SAVE_ERROR', 'Fehler beim Speichern');
 define('MODULE_BX_MODIFIED_TICKER_PREVIEW', '<b>Vorschau</b>Änderungen wirken sofort. Über den Tabs wechselst du die Sprache der Texte.');
 define('MODULE_BX_MODIFIED_TICKER_PRESENTATION', 'Darstellung');
 define('MODULE_BX_MODIFIED_TICKER_HOVER', 'Pause bei Hover');

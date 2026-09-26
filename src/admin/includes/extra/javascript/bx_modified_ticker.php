@@ -43,6 +43,9 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
       'bx_txt_message_link' => MODULE_BX_MODIFIED_TICKER_LINK,
       'bx_txt_message_from' => MODULE_BX_MODIFIED_TICKER_FROM,
       'bx_txt_message_to' => MODULE_BX_MODIFIED_TICKER_TO,
+      'bx_txt_saving' => MODULE_BX_MODIFIED_TICKER_SAVING,
+      'bx_txt_saved' => MODULE_BX_MODIFIED_TICKER_SAVED,
+      'bx_txt_save_error' => MODULE_BX_MODIFIED_TICKER_SAVE_ERROR,
     ];
 
 ?>
@@ -56,57 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
 const defaultLanguage = <?php echo $default_language_json; ?>;
 const I18n = <?php echo json_encode($translations, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
-const tickerSettings = {
-  speed: 60,
-  gap: 3,
-  size: 15,
-  pad: .8,
-  fade: 4,
-  pause: true,
-  dir: 'left',
-  pos: 'top',
-  font: 'inherit',
-  weight: '400',
-  bg: '#ffffff',
-  ink: '#14181f',
-  accent: '#e5322d',
-  line: '#dfe4ea'
-};
+// Aktuelle Werte aus der Datenbank (Konfiguration, Label, Meldungen).
+const tickerSettings = <?php echo json_encode($bx_settings, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
 const tickerState = {
   lang: <?php echo $ui_language_json; ?>,
-  label: {
-    <?php echo $ui_language_json; ?>: 'Live',
-  },
-  items: [
-    {
-      active: true,
-      link: '',
-      from: '',
-      to: '',
-      text: {
-        <?php echo $ui_language_json; ?>: '',
-      }
-    },
-    {
-      active: true,
-      link: '',
-      from: '',
-      to: '',
-      text: {
-        <?php echo $ui_language_json; ?>: '',
-      }
-    },
-    {
-      active: true,
-      link: '',
-      from: '',
-      to: '',
-      text: {
-        <?php echo $ui_language_json; ?>: '',
-      }
-    }
-  ]
+  label: <?php echo json_encode($bx_label, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>,
+  items: <?php echo json_encode($bx_items, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>
 };
 
 const sliderDefinitions = [
@@ -234,7 +193,9 @@ function render() {
   updateJsonPreview();
 }
 
-function updateJsonPreview() {
+// Wird sowohl für die JSON-Vorschau als auch für den echten Speichern-Request genutzt,
+// damit beide garantiert denselben Stand zeigen bzw. senden.
+function buildPayload() {
   const configuration = {
     BX_TICKER_SPEED: tickerSettings.speed,
     BX_TICKER_GAP: tickerSettings.gap,
@@ -252,11 +213,15 @@ function updateJsonPreview() {
     BX_TICKER_COLOR_LINE: tickerSettings.line
   };
 
-  querySelector('#bxa-json').textContent = JSON.stringify({
+  return {
     configuration,
     label: tickerState.label,
     bx_ticker_items: tickerState.items
-  }, null, 1);
+  };
+}
+
+function updateJsonPreview() {
+  querySelector('#bxa-json').textContent = JSON.stringify(buildPayload(), null, 1);
 }
 
 function list() {
@@ -343,7 +308,7 @@ querySelector('#bxa-langs').onclick = event => {
   render();
 };
 
-querySelector('#bxa-label').value = tickerState.label.de;
+querySelector('#bxa-label').value = tickerState.label[tickerState.lang] || '';
 querySelector('#bxa-label').oninput = event => {
   tickerState.label[tickerState.lang] = event.target.value;
   render();
@@ -428,10 +393,56 @@ querySelector('#bxa-add').onclick = () => {
   messageListElement.querySelector('.bxa-it:last-child [data-f=text]').focus();
 };
 
-querySelector('#bxa-save').onclick = () => {
-  const toastElement = querySelector('#bxa-toast');
+const saveButton = querySelector('#bxa-save');
+const toastElement = querySelector('#bxa-toast');
+
+function showToast(message, isError) {
+  toastElement.textContent = message;
+  toastElement.classList.toggle('bxa-toast-error', Boolean(isError));
   toastElement.classList.add('on');
-  setTimeout(() => toastElement.classList.remove('on'), 1800);
+  setTimeout(() => toastElement.classList.remove('on'), 2600);
+}
+
+saveButton.onclick = async () => {
+  const csrfFieldName = saveButton.dataset.csrfName;
+  const csrfFieldValue = saveButton.dataset.csrfValue;
+
+  const body = new URLSearchParams();
+  body.set('bx_ticker_action', 'save');
+  body.set('bx_ticker_payload', JSON.stringify(buildPayload()));
+  if (csrfFieldName) {
+    body.set(csrfFieldName, csrfFieldValue);
+  }
+
+  saveButton.disabled = true;
+  const originalLabel = saveButton.textContent;
+  saveButton.textContent = I18n.bx_txt_saving || originalLabel;
+
+  try {
+    const response = await fetch(location.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      body: body.toString()
+    });
+
+    let result = null;
+    try {
+      result = await response.json();
+    } catch (parseError) {
+      result = null;
+    }
+
+    if (response.ok && result && result.success) {
+      showToast(I18n.bx_txt_saved || 'OK', false);
+    } else {
+      showToast(I18n.bx_txt_save_error || 'Error', true);
+    }
+  } catch (networkError) {
+    showToast(I18n.bx_txt_save_error || 'Error', true);
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = originalLabel;
+  }
 };
 
 addEventListener('resize', applyTickerStyles);
