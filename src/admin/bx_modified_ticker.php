@@ -146,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['bx_ticker_action'] ?? '') 
     $sanitized_items[] = array(
       'active' => !empty($item_input['active']),
       'link'   => bx_ticker_sanitize_link($item_input['link'] ?? ''),
+      'target' => bx_ticker_choice($item_input['target'] ?? null, array('_self', '_blank'), '_self'),
       'from'   => bx_ticker_sanitize_date($item_input['from'] ?? ''),
       'to'     => bx_ticker_sanitize_date($item_input['to'] ?? ''),
       'text'   => $sanitized_text,
@@ -177,10 +178,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['bx_ticker_action'] ?? '') 
     xtc_db_query("DELETE FROM bx_ticker_items");
 
     foreach ($sanitized_items as $sort_index => $item) {
-      xtc_db_query("INSERT INTO bx_ticker_items (bx_ticker_sort_order, bx_ticker_status, bx_ticker_link, bx_ticker_date_from, bx_ticker_date_to)
+      xtc_db_query("INSERT INTO bx_ticker_items (bx_ticker_sort_order, bx_ticker_status, bx_ticker_link, bx_ticker_link_target, bx_ticker_date_from, bx_ticker_date_to)
                          VALUES ('" . (int)($sort_index + 1) . "',
                                  '" . ($item['active'] ? 1 : 0) . "',
                                  '" . xtc_db_input($item['link']) . "',
+                 '" . xtc_db_input($item['target']) . "',
                                  " . ($item['from'] !== null ? "'" . xtc_db_input($item['from']) . "'" : "NULL") . ",
                                  " . ($item['to'] !== null ? "'" . xtc_db_input($item['to']) . "'" : "NULL") . ")");
       $new_item_id = xtc_db_insert_id();
@@ -237,6 +239,7 @@ while ($item_row = xtc_db_fetch_array($items_query)) {
   $bx_items[$item_row['bx_ticker_items_id']] = array(
     'active' => $item_row['bx_ticker_status'] == 1,
     'link'   => $item_row['bx_ticker_link'],
+    'target' => in_array($item_row['bx_ticker_link_target'] ?? '_self', array('_self', '_blank'), true) ? $item_row['bx_ticker_link_target'] : '_self',
     'from'   => $item_row['bx_ticker_date_from'] ?: '',
     'to'     => $item_row['bx_ticker_date_to'] ?: '',
     'text'   => array_fill_keys($bx_language_codes, ''),

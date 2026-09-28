@@ -50,7 +50,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
 
   // ---- Aktive Meldungen im gültigen Zeitraum ----
   $bx_ticker_items = array();
-  $bx_items_query = xtc_db_query("SELECT bti.bx_ticker_items_id, bti.bx_ticker_link,
+  $bx_items_query = xtc_db_query("SELECT bti.bx_ticker_items_id, bti.bx_ticker_link, bti.bx_ticker_link_target,
                                           cur.bx_ticker_text AS text_current,
                                           def.bx_ticker_text AS text_default
                                      FROM bx_ticker_items bti
@@ -77,6 +77,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
     $bx_ticker_items[] = array(
       'text' => $bx_text,
       'link' => $bx_item_row['bx_ticker_link'],
+      'target' => in_array($bx_item_row['bx_ticker_link_target'] ?? '_self', array('_self', '_blank'), true) ? $bx_item_row['bx_ticker_link_target'] : '_self',
     );
   }
 
@@ -92,7 +93,8 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
       foreach ($bx_ticker_items as $bx_item) {
         $bx_text_html = htmlspecialchars($bx_item['text'], ENT_QUOTES, 'UTF-8');
         if ($bx_item['link'] !== '') {
-          echo '<li><a href="' . htmlspecialchars($bx_item['link'], ENT_QUOTES, 'UTF-8') . '"' . ($bx_hidden ? ' tabindex="-1"' : '') . '>' . $bx_text_html . '</a></li>';
+          $bx_target = $bx_item['target'] === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '';
+          echo '<li><a href="' . htmlspecialchars($bx_item['link'], ENT_QUOTES, 'UTF-8') . '"' . $bx_target . ($bx_hidden ? ' tabindex="-1"' : '') . '>' . $bx_text_html . '</a></li>';
         } else {
           echo '<li>' . $bx_text_html . '</li>';
         }

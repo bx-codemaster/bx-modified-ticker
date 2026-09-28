@@ -18,6 +18,7 @@
   <li>Jede Meldung einzeln aktivierbar/deaktivierbar.</li>
   <li>Mehrsprachige Texte je Meldung – fehlt eine Übersetzung, greift automatisch die Shop-Standardsprache als Fallback.</li>
   <li>Optionaler Link je Meldung (nur relative Pfade oder <code>http(s)://</code> werden akzeptiert).</li>
+  <li>Linkziel je Meldung wählbar: gleiches Fenster oder neues Fenster (<code>target="_blank"</code>).</li>
   <li>Zeitgesteuerte Anzeige über "Von"/"Bis"-Datum (z. B. für befristete Aktionen).</li>
   <li>Frei editierbares Label links im Ticker (z. B. "Aktuell"/"Live"), ebenfalls mehrsprachig.</li>
 </ul>
@@ -53,6 +54,7 @@
   <li>CSRF-Schutz über den globalen Shop-Mechanismus (<code>CSRFName</code>/<code>CSRFToken</code>).</li>
   <li>Serverseitige Validierung aller Eingaben: Zahlenwerte werden auf sinnvolle Bereiche begrenzt, Farben auf gültige Hex-Werte geprüft, Auswahlfelder (Richtung, Position, Typ, Schriftart, Schriftschnitt) gegen Whitelists validiert.</li>
   <li>Links werden auf relative Pfade oder <code>http(s)://</code> beschränkt (kein <code>javascript:</code>/<code>data:</code> etc.).</li>
+  <li>Bei neuen Fenstern wird zusätzlich <code>rel="noopener noreferrer"</code> ausgegeben.</li>
   <li>Freitexte werden von HTML/Tags befreit und längenbegrenzt.</li>
   <li>Speichern erfolgt in einer Datenbank-Transaktion (Rollback bei Fehlern).</li>
   <li>Ausgabe im Frontend ist durchgehend HTML-escaped.</li>

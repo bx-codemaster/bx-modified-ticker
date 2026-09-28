@@ -129,7 +129,7 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   background: none;
-  padding: .4rem .8rem;
+  padding: .45rem .8rem;
   margin: 0;
   font-size: .85em;
   cursor: pointer;
@@ -137,8 +137,8 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 }
 
 .bxa .bxa-seg button:hover:not([aria-pressed="true"]) {
-  color: var(--bxa-accInk);
-  background: var(--bxa-mut);
+  color: var(--bxa-mut);
+  background: var(--bxa-line);
 }
 
 .bxa .bxa-seg button[aria-pressed="true"] {
@@ -514,7 +514,7 @@ section > .bxa-row.bxa-plain {
 
 .bxa .bxa-l2 {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: .5rem;
   margin-top: .5rem;
 }

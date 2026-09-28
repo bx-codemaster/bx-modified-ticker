@@ -41,6 +41,9 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
       'bx_txt_no_active_message' => MODULE_BX_MODIFIED_TICKER_NO_ACTIVE_MESSAGE,
       'bx_txt_message_text' => MODULE_BX_MODIFIED_TICKER_TEXT,
       'bx_txt_message_link' => MODULE_BX_MODIFIED_TICKER_LINK,
+      'bx_txt_message_target' => MODULE_BX_MODIFIED_TICKER_LINK_TARGET,
+      'bx_txt_same_window' => MODULE_BX_MODIFIED_TICKER_SAME_WINDOW,
+      'bx_txt_new_window' => MODULE_BX_MODIFIED_TICKER_NEW_WINDOW,
       'bx_txt_message_from' => MODULE_BX_MODIFIED_TICKER_FROM,
       'bx_txt_message_to' => MODULE_BX_MODIFIED_TICKER_TO,
       'bx_txt_saving' => MODULE_BX_MODIFIED_TICKER_SAVING,
@@ -177,7 +180,7 @@ function render() {
   const tickerItemsMarkup = tickerState.items
     .filter(item => item.active && (!item.from || item.from <= currentDate) && (!item.to || item.to >= currentDate) && getLocalizedText(item.text))
     .map(item => `
-      <li>${item.link ? `<a href="#">${escapeHtml(getLocalizedText(item.text))}</a>` : escapeHtml(getLocalizedText(item.text))}</li>
+      <li>${item.link ? `<a href="#"${item.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escapeHtml(getLocalizedText(item.text))}</a>` : escapeHtml(getLocalizedText(item.text))}</li>
     `)
     .join('') || '<li>' + I18n.bx_txt_no_active_message + '</li>';
 
@@ -236,6 +239,10 @@ function list() {
       </div>
       <div class="bxa-l2">
         <label>${I18n.bx_txt_message_link}<input class="bxa-txt" data-f="link" value="${escapeHtml(item.link)}" placeholder="optional"></label>
+        <label>${I18n.bx_txt_message_target}<br><span class="bxa-seg" data-link-target>
+          <button type="button" data-v="_self" aria-pressed="${item.target !== '_blank' ? 'true' : 'false'}">${I18n.bx_txt_same_window}</button>
+          <button type="button" data-v="_blank" aria-pressed="${item.target === '_blank' ? 'true' : 'false'}">${I18n.bx_txt_new_window}</button>
+        </span></label>
         <label>${I18n.bx_txt_message_from}<input class="bxa-txt" type="date" data-f="from" value="${item.from}"></label>
         <label>${I18n.bx_txt_message_to}<input class="bxa-txt" type="date" data-f="to" value="${item.to}"></label>
       </div>
@@ -335,6 +342,19 @@ messageListElement.addEventListener('input', event => {
 });
 
 messageListElement.addEventListener('click', event => {
+  const targetButton = event.target.closest('[data-link-target] button');
+  if (targetButton) {
+    const itemRow = targetButton.closest('.bxa-it');
+    const item = tickerState.items[+itemRow.dataset.i];
+    item.target = targetButton.dataset.v === '_blank' ? '_blank' : '_self';
+    targetButton.closest('[data-link-target]').querySelectorAll('button').forEach(button => {
+      button.setAttribute('aria-pressed', button === targetButton ? 'true' : 'false');
+    });
+    updateJsonPreview();
+    render();
+    return;
+  }
+
   if (event.target.dataset.del !== undefined) {
     tickerState.items.splice(+event.target.closest('.bxa-it').dataset.i, 1);
     list();
@@ -385,6 +405,7 @@ querySelector('#bxa-add').onclick = () => {
   tickerState.items.push({
     active: true,
     link: '',
+    target: '_self',
     from: '',
     to: '',
     text: Object.fromEntries(availableLanguages.map(languageCode => [languageCode, '']))

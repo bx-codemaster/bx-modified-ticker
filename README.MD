@@ -9,6 +9,7 @@ Konfigurierbare, mehrsprachige Laufschrift (News-Ticker) für **modified eCommer
 - Jede Meldung einzeln aktivierbar/deaktivierbar.
 - Mehrsprachige Texte je Meldung – fehlt eine Übersetzung, greift automatisch die Shop-Standardsprache als Fallback.
 - Optionaler Link je Meldung (nur relative Pfade oder `http(s)://` werden akzeptiert).
+- Linkziel je Meldung wählbar: gleiches Fenster oder neues Fenster (`target="_blank"`).
 - Zeitgesteuerte Anzeige über "Von"/"Bis"-Datum (z. B. für befristete Aktionen).
 - Frei editierbares Label links im Ticker (z. B. "Aktuell"/"Live"), ebenfalls mehrsprachig.
 
@@ -36,6 +37,7 @@ Konfigurierbare, mehrsprachige Laufschrift (News-Ticker) für **modified eCommer
 - CSRF-Schutz über den globalen Shop-Mechanismus (`CSRFName`/`CSRFToken`).
 - Serverseitige Validierung aller Eingaben: Zahlenwerte werden auf sinnvolle Bereiche begrenzt, Farben auf gültige Hex-Werte geprüft, Auswahlfelder (Richtung, Position, Typ, Schriftart, Schriftschnitt) gegen Whitelists validiert.
 - Links werden auf relative Pfade oder `http(s)://` beschränkt (kein `javascript:`/`data:` etc.).
+- Bei neuen Fenstern wird zusätzlich `rel="noopener noreferrer"` ausgegeben.
 - Freitexte werden von HTML/Tags befreit und längenbegrenzt.
 - Speichern erfolgt in einer Datenbank-Transaktion (Rollback bei Fehlern).
 - Ausgabe im Frontend ist durchgehend HTML-escaped.

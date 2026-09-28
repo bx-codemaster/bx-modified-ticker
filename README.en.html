@@ -18,6 +18,7 @@
   <li>Each message can be enabled/disabled individually.</li>
   <li>Multilingual text per message – if a translation is missing, the shop's default language is used as a fallback automatically.</li>
   <li>Optional link per message (only relative paths or <code>http(s)://</code> are accepted).</li>
+  <li>Link target can be selected per message: same window or new window (<code>target="_blank"</code>).</li>
   <li>Scheduled display via "from"/"to" dates (e.g. for time-limited promotions).</li>
   <li>Freely editable label on the left of the ticker (e.g. "Current"/"Live"), also multilingual.</li>
 </ul>
@@ -53,6 +54,7 @@
   <li>CSRF protection via the shop's global mechanism (<code>CSRFName</code>/<code>CSRFToken</code>).</li>
   <li>Server-side validation of all inputs: numeric values are clamped to sensible ranges, colors are checked for valid hex values, choice fields (direction, position, type, font, font weight) are validated against whitelists.</li>
   <li>Links are restricted to relative paths or <code>http(s)://</code> (no <code>javascript:</code>/<code>data:</code> etc.).</li>
+  <li>New-window links also receive <code>rel="noopener noreferrer"</code>.</li>
   <li>Free text is stripped of HTML/tags and length-limited.</li>
   <li>Saving is performed within a database transaction (rollback on errors).</li>
   <li>Frontend output is consistently HTML-escaped.</li>

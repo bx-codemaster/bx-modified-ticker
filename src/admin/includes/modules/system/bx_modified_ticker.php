@@ -51,7 +51,8 @@ class bx_modified_ticker {
 
   function __construct() {
     $this->code        = 'bx_modified_ticker';
-    $this->version     = '1.0.0';
+    $this->version     = '1.2.0';
+
     $this->title       = defined('MODULE_BX_MODIFIED_TICKER_TEXT_TITLE') ? MODULE_BX_MODIFIED_TICKER_TEXT_TITLE : '';
     $this->description = defined('MODULE_BX_MODIFIED_TICKER_TEXT_DESC') ? MODULE_BX_MODIFIED_TICKER_TEXT_DESC : '';
     $this->sort_order  = defined('MODULE_BX_MODIFIED_TICKER_SORT_ORDER') ? (int)MODULE_BX_MODIFIED_TICKER_SORT_ORDER : 0;
@@ -140,12 +141,17 @@ class bx_modified_ticker {
       bx_ticker_sort_order int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Reihenfolge im Ticker',
       bx_ticker_status tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Aktiv/Inaktiv',
       bx_ticker_link varchar(255) NOT NULL DEFAULT '' COMMENT 'Optionaler Link der Meldung',
+      bx_ticker_link_target varchar(10) NOT NULL DEFAULT '_self' COMMENT 'Linkziel: gleiches oder neues Fenster',
       bx_ticker_date_from date DEFAULT NULL COMMENT 'Anzeige ab (NULL = sofort)',
       bx_ticker_date_to date DEFAULT NULL COMMENT 'Anzeige bis inkl. (NULL = unbegrenzt)',
       bx_ticker_date_added datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Erstellungsdatum',
       PRIMARY KEY (bx_ticker_items_id),
       KEY idx_bx_ticker_items_active (bx_ticker_status, bx_ticker_sort_order)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Ticker-Meldungen (sprachunabhaengige Daten)'");
+
+    if (!$this->column_exists('bx_ticker_items', 'bx_ticker_link_target')) {
+      xtc_db_query("ALTER TABLE bx_ticker_items ADD bx_ticker_link_target varchar(10) NOT NULL DEFAULT '_self' AFTER bx_ticker_link");
+    }
 
     xtc_db_query("CREATE TABLE IF NOT EXISTS bx_ticker_items_description (
       bx_ticker_items_id int(11) UNSIGNED NOT NULL COMMENT 'FK zu bx_ticker_items',
