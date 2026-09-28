@@ -8,7 +8,7 @@
  *
  * BX_TICKER_TYPE 'standard' gibt das Markup automatisch hier aus. Bei 'smarty'
  * erfolgt keine automatische Ausgabe, stattdessen wird nur die Smarty-Template-
- * Variable {$bx_ticker} global befüllt, die der User selbst im Template einbaut.
+ * Variable {$bx_modified_ticker} global befüllt, die der User selbst im Template einbaut.
  *
  * @package    BX Modified Ticker
  * @subpackage Frontend Ausgabe
@@ -102,7 +102,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
       echo '</ul>';
     };
 
-    // Bei Typ "smarty" wird nur die Template-Variable {$bx_ticker} befüllt, keine automatische Ausgabe.
+    // Bei Typ "smarty" wird nur die Template-Variable {$bx_modified_ticker} befüllt, keine automatische Ausgabe.
     $bx_ticker_smarty_mode = defined('BX_TICKER_TYPE') && BX_TICKER_TYPE === 'smarty';
     if ($bx_ticker_smarty_mode) {
       ob_start();
@@ -122,7 +122,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
     }
 
     if ($bx_ticker_smarty_mode) {
-      (new Smarty())->assignGlobal('bx_modified_ticker', ob_get_clean());
+      $smarty->assignGlobal('bx_modified_ticker', ob_get_clean());
     }
   }
 }

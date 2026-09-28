@@ -49,9 +49,9 @@ class bx_modified_ticker {
     'BX_TICKER_COLOR_LINE'   => array('#dfe4ea', ''),
   );
 
-  function __construct() {
+  public function __construct() {
     $this->code        = 'bx_modified_ticker';
-    $this->version     = '1.2.0';
+    $this->version     = '1.2.1';
 
     $this->title       = defined('MODULE_BX_MODIFIED_TICKER_TEXT_TITLE') ? MODULE_BX_MODIFIED_TICKER_TEXT_TITLE : '';
     $this->description = defined('MODULE_BX_MODIFIED_TICKER_TEXT_DESC') ? MODULE_BX_MODIFIED_TICKER_TEXT_DESC : '';
@@ -60,18 +60,18 @@ class bx_modified_ticker {
     $this->development_status = 'd';
   }
 
-  function process($file): bool {
+  public function process($file): bool {
     return true;
   }
 
-  function display(): array {
+  public function display(): array {
     $manage = defined('MODULE_BX_MODIFIED_TICKER_BUTTON_MANAGE') ? MODULE_BX_MODIFIED_TICKER_BUTTON_MANAGE : 'Ticker';
     return array('text' => '<br /><div align="center">' . xtc_button(BUTTON_SAVE) .
       xtc_button_link(BUTTON_CANCEL, xtc_href_link(FILENAME_MODULE_EXPORT, 'set=' . $_GET['set'] . '&module=' . $this->code)) .
       xtc_button_link($manage, xtc_href_link('bx_modified_ticker.php')) . '</div>');
   }
 
-  function check(): bool {
+  public function check(): bool {
     if (!isset($this->_check)) {
       if (defined('MODULE_BX_MODIFIED_TICKER_STATUS')) {
         $this->_check = true;
@@ -85,7 +85,7 @@ class bx_modified_ticker {
     return $this->_check;
   }
 
-  function install(): void {
+  public function install(): void {
     // -----------------------------------------------------------------------------
     // 1. Admin-Recht (nur anlegen, wenn Spalte noch nicht existiert)
     // -----------------------------------------------------------------------------
@@ -205,7 +205,7 @@ class bx_modified_ticker {
     }
   }
 
-  function remove(): void {
+  public function remove(): void {
     if (defined('MODULE_BX_MODIFIED_TICKER_CONFIG_ID')) {
       xtc_db_query("DELETE FROM " . TABLE_CONFIGURATION_GROUP . " WHERE configuration_group_id = '" . (int)MODULE_BX_MODIFIED_TICKER_CONFIG_ID . "'");
     }
@@ -222,7 +222,7 @@ class bx_modified_ticker {
     }
   }
 
-  function keys(): array {
+  public function keys(): array {
     $key = array(
         'MODULE_BX_MODIFIED_TICKER_STATUS',
         'MODULE_BX_MODIFIED_TICKER_VERSION',
@@ -231,12 +231,12 @@ class bx_modified_ticker {
     return $key;
   }
 
-  function keys2(): array {
+  public function keys2(): array {
     $keys = array_keys(self::SETTINGS);
     return $keys;
   }
 
-  function custom(): void { }
+  public function custom(): void { }
 
   // ---------------------------------------------------------------------------
   // Hilfsmethoden
