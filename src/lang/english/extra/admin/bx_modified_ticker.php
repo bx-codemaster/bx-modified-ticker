@@ -42,6 +42,8 @@ define('MODULE_BX_MODIFIED_TICKER_HINT_ORDER', 'Order by dragging the handle or 
 define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Values as the module actually stores them.');
 
 define('MODULE_BX_MODIFIED_TICKER_SPEED', 'Speed');
+define('MODULE_BX_MODIFIED_TICKER_MOBILE_FACTOR', 'Mobile speed factor');
+define('MODULE_BX_MODIFIED_TICKER_MOBILE_BREAKPOINT', 'Mobile up to width');
 define('MODULE_BX_MODIFIED_TICKER_GAP', 'Gap');
 define('MODULE_BX_MODIFIED_TICKER_SIZE', 'Size');
 define('MODULE_BX_MODIFIED_TICKER_PAD', 'Padding');

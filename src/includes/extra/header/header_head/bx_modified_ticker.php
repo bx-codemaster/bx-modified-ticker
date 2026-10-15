@@ -37,7 +37,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
   --bx-fade: <?php echo (defined('BX_TICKER_FADE') ? BX_TICKER_FADE : 4); ?>rem;
   --bx-font: <?php echo $bx_font_family; ?>;
   --bx-weight: <?php echo (defined('BX_TICKER_FONT_WEIGHT') ? BX_TICKER_FONT_WEIGHT : 400); ?>;
-  --bx-dur: 30s;
+  --bx-dur: <?php echo (defined('BX_TICKER_SPEED') ? BX_TICKER_SPEED : '30s'); ?>;
 }
 
 .bx-ticker {
@@ -172,6 +172,8 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
     var group = ticker.querySelector('.bx-ticker-group');
     var speed = <?php echo (float) (defined('BX_TICKER_SPEED') ? BX_TICKER_SPEED : 60); ?>; // px/s
     var gapRem = <?php echo (float) (defined('BX_TICKER_GAP') ? BX_TICKER_GAP : 3); ?>;
+    var mobileFactor = <?php echo (float) (defined('BX_TICKER_MOBILE_FACTOR') ? BX_TICKER_MOBILE_FACTOR : 1.5); ?>;
+    var mobileQuery = window.matchMedia('(max-width: <?php echo (int) (defined('BX_TICKER_MOBILE_BREAKPOINT') ? BX_TICKER_MOBILE_BREAKPOINT : 768); ?>px)');
 
     function applyDuration() {
       if (!group) {
@@ -179,7 +181,7 @@ if (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && (string)MODULE_BX_MODIFIED_TI
       }
       var gapPx = gapRem * parseFloat(getComputedStyle(document.documentElement).fontSize);
       var distance = group.offsetWidth + gapPx;
-      var duration = Math.max(4, distance / speed);
+      var duration = Math.max(4, distance / (mobileQuery.matches ? speed * mobileFactor : speed));
       ticker.style.setProperty('--bx-dur', duration.toFixed(1) + 's');
     }
 

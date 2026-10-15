@@ -42,6 +42,8 @@ define('MODULE_BX_MODIFIED_TICKER_HINT_ORDER', 'Reihenfolge per Ziehen am Griff 
 define('MODULE_BX_MODIFIED_TICKER_HINT_JSON', 'Werte, wie das Modul sie speichert.');
 
 define('MODULE_BX_MODIFIED_TICKER_SPEED', 'Geschwindigkeit');
+define('MODULE_BX_MODIFIED_TICKER_MOBILE_FACTOR', 'Tempo-Faktor mobil');
+define('MODULE_BX_MODIFIED_TICKER_MOBILE_BREAKPOINT', 'Mobil bis Breite');
 define('MODULE_BX_MODIFIED_TICKER_GAP', 'Abstand');
 define('MODULE_BX_MODIFIED_TICKER_SIZE', 'Schriftgröße');
 define('MODULE_BX_MODIFIED_TICKER_PAD', 'Padding');

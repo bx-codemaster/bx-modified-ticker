@@ -108,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['bx_ticker_action'] ?? '') 
   // ---- Konfigurationswerte validieren (Whitelists/Bereiche wie im Admin-UI) ----
   $config_values = array(
     'BX_TICKER_SPEED'        => bx_ticker_clamp_number($configuration_input['BX_TICKER_SPEED'] ?? null, 20, 240, 60, 0),
+    'BX_TICKER_MOBILE_FACTOR'     => bx_ticker_clamp_number($configuration_input['BX_TICKER_MOBILE_FACTOR'] ?? null, 1, 3, 1.5, 2),
+    'BX_TICKER_MOBILE_BREAKPOINT' => bx_ticker_clamp_number($configuration_input['BX_TICKER_MOBILE_BREAKPOINT'] ?? null, 320, 1024, 768, 0),
     'BX_TICKER_GAP'          => bx_ticker_clamp_number($configuration_input['BX_TICKER_GAP'] ?? null, 1, 8, 3, 2),
     'BX_TICKER_FONT_SIZE'    => bx_ticker_clamp_number($configuration_input['BX_TICKER_FONT_SIZE'] ?? null, 12, 24, 15, 0),
     'BX_TICKER_PADDING'      => bx_ticker_clamp_number($configuration_input['BX_TICKER_PADDING'] ?? null, .4, 1.6, .8, 2),
@@ -209,6 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['bx_ticker_action'] ?? '') 
 // ==========================================================================
 $bx_settings = array(
   'speed'  => (float) (defined('BX_TICKER_SPEED') ? BX_TICKER_SPEED : 60),
+  'mobileFactor'     => (float) (defined('BX_TICKER_MOBILE_FACTOR') ? BX_TICKER_MOBILE_FACTOR : 1.5),
+  'mobileBreakpoint' => (float) (defined('BX_TICKER_MOBILE_BREAKPOINT') ? BX_TICKER_MOBILE_BREAKPOINT : 768),
   'gap'    => (float) (defined('BX_TICKER_GAP') ? BX_TICKER_GAP : 3),
   'size'   => (float) (defined('BX_TICKER_FONT_SIZE') ? BX_TICKER_FONT_SIZE : 15),
   'pad'    => (float) (defined('BX_TICKER_PADDING') ? BX_TICKER_PADDING : .8),

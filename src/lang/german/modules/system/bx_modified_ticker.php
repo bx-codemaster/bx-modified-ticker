@@ -26,6 +26,10 @@ define('MODULE_BX_MODIFIED_TICKER_CONFIG_ID_DESC', 'ID der Modulkategorie in der
 
 define('BX_TICKER_SPEED_TITLE', 'Tempo (px/s)');
 define('BX_TICKER_SPEED_DESC', 'Geschwindigkeit in Pixel pro Sekunde. Bleibt bei jeder Textmenge gleich.');
+define('BX_TICKER_MOBILE_FACTOR_TITLE', 'Tempo-Faktor mobil');
+define('BX_TICKER_MOBILE_FACTOR_DESC', 'Multiplikator für das Tempo auf kleinen Bildschirmen (1 = unverändert).');
+define('BX_TICKER_MOBILE_BREAKPOINT_TITLE', 'Mobil bis Breite (px)');
+define('BX_TICKER_MOBILE_BREAKPOINT_DESC', 'Bis zu dieser Fensterbreite gilt der mobile Tempo-Faktor.');
 define('BX_TICKER_GAP_TITLE', 'Abstand (rem)');
 define('BX_TICKER_GAP_DESC', 'Abstand zwischen den Meldungen.');
 define('BX_TICKER_FONT_SIZE_TITLE', 'Schriftgröße (px)');

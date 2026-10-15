@@ -30,6 +30,8 @@ if ( defined('MODULE_BX_MODIFIED_TICKER_STATUS') &&
 
     $translations = [
       'bx_txt_speed' => MODULE_BX_MODIFIED_TICKER_SPEED,
+      'bx_txt_mobile_factor' => MODULE_BX_MODIFIED_TICKER_MOBILE_FACTOR,
+      'bx_txt_mobile_breakpoint' => MODULE_BX_MODIFIED_TICKER_MOBILE_BREAKPOINT,
       'bx_txt_gap' => MODULE_BX_MODIFIED_TICKER_GAP,
       'bx_txt_size' => MODULE_BX_MODIFIED_TICKER_SIZE,
       'bx_txt_pad' => MODULE_BX_MODIFIED_TICKER_PAD,
@@ -73,6 +75,8 @@ const tickerState = {
 
 const sliderDefinitions = [
   ['speed', I18n.bx_txt_speed, 'px/s', 20, 240, 5],
+  ['mobileFactor', I18n.bx_txt_mobile_factor, '×', 1, 3, .1],
+  ['mobileBreakpoint', I18n.bx_txt_mobile_breakpoint, 'px', 320, 1024, 16],
   ['gap', I18n.bx_txt_gap, 'rem', 1, 8, .25],
   ['size', I18n.bx_txt_size, 'px', 12, 24, 1],
   ['pad', I18n.bx_txt_pad, 'rem', .4, 1.6, .1],
@@ -201,6 +205,8 @@ function render() {
 function buildPayload() {
   const configuration = {
     BX_TICKER_SPEED: tickerSettings.speed,
+    BX_TICKER_MOBILE_FACTOR: tickerSettings.mobileFactor,
+    BX_TICKER_MOBILE_BREAKPOINT: tickerSettings.mobileBreakpoint,
     BX_TICKER_GAP: tickerSettings.gap,
     BX_TICKER_FONT_SIZE: tickerSettings.size,
     BX_TICKER_PADDING: tickerSettings.pad,

@@ -33,6 +33,8 @@ class bx_modified_ticker {
   // Einstellungen: key => array(Standardwert, set_function)
   private const SETTINGS = array(
     'BX_TICKER_SPEED'        => array('60',      ''),
+    'BX_TICKER_MOBILE_FACTOR'     => array('1.5',  ''),
+    'BX_TICKER_MOBILE_BREAKPOINT' => array('768',  ''),
     'BX_TICKER_GAP'          => array('3',       ''),
     'BX_TICKER_FONT_SIZE'    => array('15',      ''),
     'BX_TICKER_PADDING'      => array('0.8',     ''),
