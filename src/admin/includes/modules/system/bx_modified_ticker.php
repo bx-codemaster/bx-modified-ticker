@@ -5,9 +5,39 @@
 * System module for installation and management of the BX Modified Ticker module in modified eCommerce.
 * Creates configuration keys, admin access right and database tables for a multilingual, configurable ticker.
 *
+* In addition, this module provides a self-contained update mechanism based on
+* GitHub Releases. On the admin module overview and edit page, the latest release
+* is checked at configurable intervals and an update is offered when its semantic
+* version is newer than the installed module version. Release checks are cached;
+* GitHub and external module servers are not contacted on every request.
+*
+* Before an update is installed, the updater performs the following checks:
+* - The release tag and package name must contain a valid semantic version.
+* - The archive must be the exact module asset belonging to that version.
+* - The SHA-256 checksum of the complete ZIP archive must match.
+* - The package must contain a BX module manifest.
+* - Every manifest file must match its recorded SHA-256 checksum.
+* - ZIP paths, symbolic links, file counts and archive sizes must be safe.
+*
+* File changes are protected by an exclusive update lock and a backup-based
+* rollback plan. Files removed from a newer package are deleted when they were
+* registered by the preceding installed manifest. Update execution is performed
+* only through the modified admin interface, where the form is protected by the
+* shop's standard CSRF token mechanism.
+*
+* Release archives are created by the GitHub Actions workflow shipped with the
+* module. They contain the files below the configured source directory at archive
+* root level plus a generated .bx-module-manifest.json file. The updater is
+* independent of MMLC and can therefore also be used by manually installed
+* modules.
+*
+* PHP 8.0 or newer and the cURL and ZipArchive extensions are required for the
+* online update functionality. Normal module operation remains independent from
+* GitHub once the release status has been cached.
+*
 * @package    BX Modified Ticker
 * @subpackage System Module
-* @version    1.0.0
+* @version    1.3.0
 * @author     benax
 * @license    GNU General Public License v2.0
 */
@@ -23,6 +53,9 @@ class bx_modified_ticker {
   public int $sort_order;
   public bool $enabled;
   public bool $_check;
+  public array $properties = array();
+  private ?BxGithubModuleUpdater $githubUpdater = null;
+  private ?array $updateStatus = null;
 
   // Spalte in admin_access (Recht auf die Admin-Seite bx_ticker.php)
   private const ACCESS_COLUMN = 'bx_modified_ticker';
@@ -52,25 +85,101 @@ class bx_modified_ticker {
   );
 
   public function __construct() {
-    $this->code        = 'bx_modified_ticker';
-    $this->version     = '1.2.1';
+    // Bootstrap-Logik für Übergangsphase: zentraler Updater bevorzugt, eigene Kopie nur als Fallback
+    if (!class_exists(BxGithubModuleUpdater::class)) {
+      $bootstrapPath = DIR_FS_ADMIN . 'includes/classes/BX/Github/BxGithubModuleUpdater.php';
+      if (!is_file($bootstrapPath)) {
+        throw new RuntimeException('bx-module-updater ist nicht installiert.');
+      }
+      require_once $bootstrapPath;
+    } elseif (
+      defined(BxGithubModuleUpdater::class . '::VERSION')
+      && version_compare(BxGithubModuleUpdater::VERSION, '1.1.0', '>')
+    ) {
+      // Zentrale Version ist neuer -> eigene Kopie NICHT laden (wird gar nicht mehr ausgeliefert)
+    } else {
+      // Fallback: eigene Kopie laden (für Installationen ohne zentralen Updater)
+      require_once DIR_FS_ADMIN . 'includes/classes/BX/Github/BxGithubModuleUpdater.php';
+    }
 
+    $migrationFile = DIR_FS_ADMIN
+      . 'includes/classes/BX/Github/BxModifiedTickerMigrations.php';
+    if (is_file($migrationFile)) {
+      require_once $migrationFile;
+    }
+
+    $this->code        = 'bx_modified_ticker';
+    $this->version     = '1.3.0';
     $this->title       = defined('MODULE_BX_MODIFIED_TICKER_TEXT_TITLE') ? MODULE_BX_MODIFIED_TICKER_TEXT_TITLE : '';
     $this->description = defined('MODULE_BX_MODIFIED_TICKER_TEXT_DESC') ? MODULE_BX_MODIFIED_TICKER_TEXT_DESC : '';
     $this->sort_order  = defined('MODULE_BX_MODIFIED_TICKER_SORT_ORDER') ? (int)MODULE_BX_MODIFIED_TICKER_SORT_ORDER : 0;
     $this->enabled     = (defined('MODULE_BX_MODIFIED_TICKER_STATUS') && MODULE_BX_MODIFIED_TICKER_STATUS == 'True');
     $this->development_status = 'd';
+
+    if (
+      defined('MODULE_BX_MODIFIED_TICKER_VERSION')
+      && class_exists(BxModifiedTickerMigrations::class)
+    ) {
+      try {
+        BxModifiedTickerMigrations::migratePending();
+      } catch (Throwable $migrationException) {
+        global $messageStack;
+        if (isset($messageStack) && is_object($messageStack)) {
+          $messageStack->add_session(
+            'BX Modified Ticker Datenbankmigration fehlgeschlagen: '
+              . htmlspecialchars($migrationException->getMessage(), ENT_QUOTES, 'UTF-8'),
+            'error'
+          );
+        }
+      }
+    } elseif (defined('MODULE_BX_MODIFIED_TICKER_VERSION')) {
+      global $messageStack;
+      if (isset($messageStack) && is_object($messageStack)) {
+        $messageStack->add_session(
+          'BX Modified Ticker Migrationsklasse fehlt. Keine Datenbankmigration wurde ausgeführt.',
+          'error'
+        );
+      }
+    }
+
+    if (defined('MODULE_BX_MODIFIED_TICKER_VERSION')) {
+      $this->updateStatus = $this->getGithubUpdater()->checkForUpdate(
+        ($_GET['bx_updater_refresh'] ?? '') === '1'
+      );
+      $this->properties['button_update'] = $this->createRefreshButton();
+      if (
+        $this->updateStatus['has_update']
+        && !empty($this->updateStatus['zip_url'])
+        && !empty($this->updateStatus['sha256'])
+      ) {
+        $this->properties['button_update'] = $this->createUpdateButton(
+          $this->updateStatus['latest_version'],
+          true
+        ) . $this->properties['button_update'];
+      }
+    }
   }
 
   public function process($file): bool {
+    if (($_POST['bx_updater_action'] ?? '') === 'install') {
+      global $messageStack;
+      $result = $this->getGithubUpdater()->installLatestUpdate();
+      $messageStack->add_session($result['message'], $result['ok'] ? 'success' : 'error');
+      xtc_redirect(xtc_href_link(
+        FILENAME_MODULE_EXPORT,
+        'set=system&module=' . $this->code . '&action=edit'
+      ));
+      return true;
+    }
     return true;
   }
 
   public function display(): array {
     $manage = defined('MODULE_BX_MODIFIED_TICKER_BUTTON_MANAGE') ? MODULE_BX_MODIFIED_TICKER_BUTTON_MANAGE : 'Ticker';
-    return array('text' => '<br /><div align="center">' . xtc_button(BUTTON_SAVE) .
+    $txt = $this->createUpdateNotice() . '<br /><div align="center">' . xtc_button(BUTTON_SAVE) .
       xtc_button_link(BUTTON_CANCEL, xtc_href_link(FILENAME_MODULE_EXPORT, 'set=' . $_GET['set'] . '&module=' . $this->code)) .
-      xtc_button_link($manage, xtc_href_link('bx_modified_ticker.php')) . '</div>');
+      xtc_button_link($manage, xtc_href_link('bx_modified_ticker.php')) . '</div>';
+    return array('text' => $txt);
   }
 
   public function check(): bool {
@@ -205,6 +314,25 @@ class bx_modified_ticker {
                            VALUES ('" . (int)$item_id . "', '" . (int)$language['languages_id'] . "', '" . xtc_db_input($text) . "')");
       }
     }
+
+    // Schema-Version setzen
+    $schemaSortQuery = xtc_db_query(
+      "SELECT COALESCE(MAX(sort_order), 0) AS max_sort_order
+       FROM " . TABLE_CONFIGURATION . "
+       WHERE configuration_group_id = " . (int)$group_id
+    );
+    $schemaSort = $schemaSortQuery ? xtc_db_fetch_array($schemaSortQuery) : array();
+    $schemaSortOrder = ((int) ($schemaSort['max_sort_order'] ?? 0)) + 1;
+
+    xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . "
+                  (configuration_key, configuration_value, configuration_group_id, sort_order, date_added)
+                  VALUES (
+                    'MODULE_BX_MODIFIED_TICKER_SCHEMA_VERSION',
+                    '1.3.0',
+                    " . (int)$group_id . ",
+                    " . $schemaSortOrder . ",
+                    NOW()
+                  )");
   }
 
   public function remove(): void {
@@ -238,7 +366,207 @@ class bx_modified_ticker {
     return $keys;
   }
 
-  public function custom(): void { }
+  public function custom(): void {
+    if (($_POST['bx_updater_action'] ?? '') === 'install') {
+      global $messageStack;
+      $result = $this->getGithubUpdater()->installLatestUpdate();
+      $messageStack->add_session($result['message'], $result['ok'] ? 'success' : 'error');
+      return;
+    }
+
+    if (($_GET['delete'] ?? '') !== 'true') {
+      return;
+    }
+
+    global $messageStack;
+    $result = true;
+    $dirs_and_files = array();
+
+    $dirs_and_files[] = DIR_FS_ADMIN . 'images/icons/heading/bx_modified_ticker.png';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/extra/css/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/extra/javascript/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/extra/filenames/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/extra/menu/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/extra/functions/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_ADMIN . 'includes/modules/system/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'cache/bx_github_updater/bx-modified-ticker';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'lang/english/extra/admin/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'lang/english/modules/system/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'lang/german/extra/admin/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'lang/german/modules/system/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'includes/extra/header/header_body/bx_modified_ticker.php';
+    $dirs_and_files[] = DIR_FS_CATALOG . 'includes/extra/header/header_head/bx_modified_ticker.php';
+
+    foreach ($dirs_and_files as $dir_or_file) {
+      if (!$this->secureDelete($dir_or_file)) {
+        $messageStack->add_session($dir_or_file . ' konnte nicht gelöscht werden.', 'error');
+        $result = false;
+      }
+    }
+
+    if ($result === true) {
+      $messageStack->add_session('BX Modified Ticker erfolgreich entfernt.', 'success');
+    } else {
+      $messageStack->add_session('Entfernung unvollständig.', 'error');
+    }
+
+    $this->secureDelete(DIR_FS_ADMIN . 'includes/modules/system/bx_modified_ticker.php');
+    xtc_redirect(xtc_href_link(FILENAME_MODULE_EXPORT, 'set=system'));
+  }
+
+  private function getGithubUpdater(): BxGithubModuleUpdater
+  {
+    if ($this->githubUpdater === null) {
+      $this->githubUpdater = new BxGithubModuleUpdater(array(
+        'owner'           => 'bx-codemaster',
+        'repo'            => 'bx-modified-ticker',
+        'module_name'     => 'bx-modified-ticker',
+        'module_prefix'   => 'BX_MODIFIED_TICKER',
+        'admin_dir'       => DIR_ADMIN,
+        'public_key'      => 'xG6mrEKk81LUxWyTIpFodXsQbp2k9rKXhPX5dUPnhdc=',
+        'allowed_paths'   => array(
+          'admin/includes/extra/css',
+          'admin/includes/extra/javascript',
+          'admin/includes/extra/filenames',
+          'admin/includes/extra/menu',
+          'admin/includes/extra/functions',
+          'admin/includes/modules/system',
+          'admin/images/icons/heading',
+          'admin',
+          'includes/extra/header/header_body',
+          'includes/extra/header/header_head',
+          'lang/english/extra/admin',
+          'lang/english/modules/system',
+          'lang/german/extra/admin',
+          'lang/german/modules/system',
+        ),
+        'current_version' => version_compare(
+          $this->version,
+          MODULE_BX_MODIFIED_TICKER_VERSION,
+          '>'
+        ) ? $this->version : MODULE_BX_MODIFIED_TICKER_VERSION,
+      ));
+    }
+    return $this->githubUpdater;
+  }
+
+  private function createUpdateButton(string $version, bool $standaloneForm): string
+  {
+    $formStart   = '';
+    $formEnd     = '';
+    $actionField = ' name="bx_updater_action" value="install"';
+    if ($standaloneForm) {
+      $formStart = xtc_draw_form(
+        'bx_modified_ticker_update',
+        FILENAME_MODULE_EXPORT,
+        'set=system&module=' . $this->code . '&action=custom'
+      );
+      $formEnd = '</form>';
+      $actionField = '';
+    }
+
+    return $formStart
+      . ($standaloneForm ? xtc_draw_hidden_field('bx_updater_action', 'install') : '')
+      . '<button type="submit"' . $actionField . ' class="button bx-update" onclick="return confirm(\''
+      . sprintf(
+        MODULE_BX_MODIFIED_TICKER_UPDATE_CONFIRM,
+        htmlspecialchars($version, ENT_QUOTES, 'UTF-8')
+      )
+      . '\');">'
+      . sprintf(
+        MODULE_BX_MODIFIED_TICKER_UPDATE_BUTTON,
+        htmlspecialchars($version, ENT_QUOTES, 'UTF-8')
+      )
+      . '</button>' . $formEnd . '<br>';
+  }
+
+  private function createRefreshButton(): string
+  {
+    $label = defined('MODULE_BX_MODIFIED_TICKER_UPDATE_CHECK')
+      ? MODULE_BX_MODIFIED_TICKER_UPDATE_CHECK
+      : 'Jetzt prüfen';
+    return '<a class="button btnbox" href="'
+      . xtc_href_link(
+        FILENAME_MODULE_EXPORT,
+        xtc_get_all_get_params(array('bx_updater_refresh'))
+          . 'bx_updater_refresh=1'
+      )
+      . '" style="width: auto; display: inline-block;">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</a>';
+  }
+
+  private function createUpdateNotice(): string
+  {
+    $refreshLink = $this->createRefreshButton();
+
+    if (
+      $this->updateStatus === null
+      || !$this->updateStatus['has_update']
+      || empty($this->updateStatus['latest_version'])
+    ) {
+      return '<div class="messageStackInfo txta-c">'
+        . $refreshLink
+        . '</div>';
+    }
+
+    return '<div class="messageStackWarning txta-c">'
+      . sprintf(
+        MODULE_BX_MODIFIED_TICKER_UPDATE_AVAILABLE,
+        htmlspecialchars($this->updateStatus['latest_version'], ENT_QUOTES, 'UTF-8')
+      )
+      . '<br>'
+      . (
+        !empty($this->updateStatus['zip_url']) && !empty($this->updateStatus['sha256'])
+          ? $this->createUpdateButton($this->updateStatus['latest_version'], false)
+          : ' ' . MODULE_BX_MODIFIED_TICKER_UPDATE_NOT_INSTALLABLE
+      )
+      . $refreshLink
+      . '</div>';
+  }
+
+  private function secureDelete(string $path): bool {
+    if (!file_exists($path)) {
+      return true;
+    }
+    $realPath  = realpath($path);
+    $adminRoot = realpath(DIR_FS_ADMIN);
+    if (empty($realPath) || empty($adminRoot)) {
+      return false;
+    }
+    if ($realPath === $adminRoot || $realPath === DIRECTORY_SEPARATOR) {
+      return false;
+    }
+    if (!is_writable($realPath)) {
+      return false;
+    }
+    if (!is_dir($realPath) || is_link($realPath)) {
+      return unlink($realPath);
+    }
+    try {
+      $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($realPath, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+      );
+      foreach ($iterator as $item) {
+        $itemPath = $item->getRealPath();
+        if (!is_writable($itemPath)) {
+          return false;
+        }
+        if ($item->isDir() && !$item->isLink()) {
+          if (!rmdir($itemPath)) {
+            return false;
+          }
+        } else {
+          if (!unlink($itemPath)) {
+            return false;
+          }
+        }
+      }
+    } catch (UnexpectedValueException $e) {
+      return false;
+    }
+    return rmdir($realPath);
+  }
 
   // ---------------------------------------------------------------------------
   // Hilfsmethoden
